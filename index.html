@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Phát Âm Hóa Học IUPAC Toàn Diện</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        .card:hover { transform: translateY(-4px); transition: all 0.2s ease; }
+        .active-tab { background-color: #4f46e5 !important; color: white !important; }
+        .periodic-item { transition: all 0.2s; cursor: pointer; min-height: 80px; }
+        .periodic-item:hover { transform: scale(1.1); z-index: 10; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .filter-btn-active { background-color: #4f46e5 !important; color: white !important; border-color: #4338ca !important; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-indigo-800 mb-3">Học Phát Âm Hóa Học IUPAC</h1>
+            <p class="text-slate-600 max-w-2xl mx-auto">Danh sách đầy đủ 118 nguyên tố và các hợp chất phổ biến. Nhấn vào thẻ để nghe phát âm tiếng Anh chuẩn.</p>
+        </header>
+
+        <!-- Main Navigation -->
+        <nav class="flex flex-wrap justify-center gap-2 mb-10 bg-white p-2 rounded-2xl shadow-sm inline-flex mx-auto w-max border border-slate-200">
+            <button onclick="switchView('periodic')" id="btn-periodic" class="nav-btn px-5 py-2 rounded-xl text-slate-600 font-semibold active-tab">Bảng Tuần Hoàn (118)</button>
+            <button onclick="switchView('compounds')" id="btn-compounds" class="nav-btn px-5 py-2 rounded-xl text-slate-600 font-semibold">Hợp Chất</button>
+            <button onclick="switchView('guide')" id="btn-guide" class="nav-btn px-5 py-2 rounded-xl text-slate-600 font-semibold">Quy Tắc Đọc</button>
+        </nav>
+
+        <!-- View: Bảng Tuần Hoàn -->
+        <section id="view-periodic" class="view-section">
+            <div class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="text-2xl font-bold text-slate-800 border-l-4 border-indigo-500 pl-3">Nguyên Tố Hóa Học</h2>
+                <div class="relative w-full md:w-80">
+                    <input type="text" id="searchElements" onkeyup="searchElements()" placeholder="Tìm tên, ký hiệu, số hiệu..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-400 outline-none">
+                    <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+            <div id="periodicGrid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-2">
+                <!-- 118 Elements injected here -->
+            </div>
+        </section>
+
+        <!-- View: Hợp Chất -->
+        <section id="view-compounds" class="view-section hidden">
+            <div class="flex flex-wrap gap-2 mb-6 justify-center md:justify-start">
+                <button onclick="filterCompounds('all', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all filter-btn-active">Tất cả</button>
+                <button onclick="filterCompounds('oxide', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Oxit</button>
+                <button onclick="filterCompounds('acid', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Axit</button>
+                <button onclick="filterCompounds('base', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Bazo</button>
+                <button onclick="filterCompounds('salt', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Muối</button>
+            </div>
+            <div id="compoundGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Compounds injected here -->
+            </div>
+        </section>
+
+        <!-- View: Quy Tắc Đọc -->
+        <section id="view-guide" class="view-section hidden">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
+                <h2 class="text-3xl font-bold text-indigo-800 mb-6">Hướng dẫn nhanh cách đọc IUPAC</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">1. Nguyên tắc tiền tố (Số lượng)</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>1</strong>: Mono-</div>
+                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>2</strong>: Di-</div>
+                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>3</strong>: Tri-</div>
+                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>4</strong>: Tetra-</div>
+                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>5</strong>: Penta-</div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">2. Oxit (Oxides)</h3>
+                            <p class="text-slate-600 mb-2 italic">Tên kim loại + Oxide</p>
+                            <ul class="list-disc ml-5 space-y-2 text-slate-700">
+                                <li>Nếu kim loại nhiều hóa trị: Thêm hóa trị (II, III...)</li>
+                                <li>Phi kim: Thêm tiền tố chỉ số nguyên tử.</li>
+                                <li>Ví dụ: <strong>CO2</strong> - Carbon <strong>di</strong>oxide.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">3. Axit (Acids)</h3>
+                            <ul class="list-disc ml-5 space-y-2 text-slate-700">
+                                <li>Không có oxy: <strong>Hydro</strong>...<strong>ic</strong> acid.</li>
+                                <li>Có nhiều oxy: ...<strong>ic</strong> acid.</li>
+                                <li>Có ít oxy: ...<strong>ous</strong> acid.</li>
+                                <li>Ví dụ: <strong>HCl</strong> - Hydrochloric acid.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">4. Muối & Gốc Axit</h3>
+                        <p class="text-slate-600 mb-4 italic">Tên kim loại + Tên gốc axit</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="border p-4 rounded-xl">
+                                <span class="block font-bold text-indigo-600">-ide</span>
+                                <span class="text-sm">Gốc không oxy (Cl-, S2-...)</span>
+                            </div>
+                            <div class="border p-4 rounded-xl">
+                                <span class="block font-bold text-emerald-600">-ate</span>
+                                <span class="text-sm">Gốc nhiều oxy (SO4, NO3...)</span>
+                            </div>
+                            <div class="border p-4 rounded-xl">
+                                <span class="block font-bold text-amber-600">-ite</span>
+                                <span class="text-sm">Gốc ít oxy (SO3, NO2...)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast UI -->
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-indigo-900 text-white px-6 py-3 rounded-full shadow-2xl opacity-0 transition-all pointer-events-none flex items-center gap-3 z-50">
+        <span id="toast-text">Pronouncing...</span>
+    </div>
+
+    <script>
+        const elements = [
+            { n: 1, s: 'H', en: 'Hydrogen', vn: 'Hydro', cat: 'non-metal' },
+            { n: 2, s: 'He', en: 'Helium', vn: 'Heli', cat: 'noble-gas' },
+            { n: 3, s: 'Li', en: 'Lithium', vn: 'Liti', cat: 'alkali' },
+            { n: 4, s: 'Be', en: 'Beryllium', vn: 'Beri', cat: 'alkaline' },
+            { n: 5, s: 'B', en: 'Boron', vn: 'Bo', cat: 'metalloid' },
+            { n: 6, s: 'C', en: 'Carbon', vn: 'Cacbon', cat: 'non-metal' },
+            { n: 7, s: 'N', en: 'Nitrogen', vn: 'Nitơ', cat: 'non-metal' },
+            { n: 8, s: 'O', en: 'Oxygen', vn: 'Oxy', cat: 'non-metal' },
+            { n: 9, s: 'F', en: 'Fluorine', vn: 'Flo', cat: 'halogen' },
+            { n: 10, s: 'Ne', en: 'Neon', vn: 'Neon', cat: 'noble-gas' },
+            { n: 11, s: 'Na', en: 'Sodium', vn: 'Natri', cat: 'alkali' },
+            { n: 12, s: 'Mg', en: 'Magnesium', vn: 'Magie', cat: 'alkaline' },
+            { n: 13, s: 'Al', en: 'Aluminum', vn: 'Nhôm', cat: 'post-metal' },
+            { n: 14, s: 'Si', en: 'Silicon', vn: 'Silic', cat: 'metalloid' },
+            { n: 15, s: 'P', en: 'Phosphorus', vn: 'Photpho', cat: 'non-metal' },
+            { n: 16, s: 'S', en: 'Sulfur', vn: 'Lưu huỳnh', cat: 'non-metal' },
+            { n: 17, s: 'Cl', en: 'Chlorine', vn: 'Clo', cat: 'halogen' },
+            { n: 18, s: 'Ar', en: 'Argon', vn: 'Argon', cat: 'noble-gas' },
+            { n: 19, s: 'K', en: 'Potassium', vn: 'Kali', cat: 'alkali' },
+            { n: 20, s: 'Ca', en: 'Calcium', vn: 'Canxi', cat: 'alkaline' },
+            { n: 21, s: 'Sc', en: 'Scandium', vn: 'Scandi', cat: 'transition' },
+            { n: 22, s: 'Ti', en: 'Titanium', vn: 'Titan', cat: 'transition' },
+            { n: 23, s: 'V', en: 'Vanadium', vn: 'Vanadi', cat: 'transition' },
+            { n: 24, s: 'Cr', en: 'Chromium', vn: 'Crom', cat: 'transition' },
+            { n: 25, s: 'Mn', en: 'Manganese', vn: 'Mangan', cat: 'transition' },
+            { n: 26, s: 'Fe', en: 'Iron', vn: 'Sắt', cat: 'transition' },
+            { n: 27, s: 'Co', en: 'Cobalt', vn: 'Coban', cat: 'transition' },
+            { n: 28, s: 'Ni', en: 'Nickel', vn: 'Niken', cat: 'transition' },
+            { n: 29, s: 'Cu', en: 'Copper', vn: 'Đồng', cat: 'transition' },
+            { n: 30, s: 'Zn', en: 'Zinc', vn: 'Kẽm', cat: 'transition' },
+            { n: 31, s: 'Ga', en: 'Gallium', vn: 'Gali', cat: 'post-metal' },
+            { n: 32, s: 'Ge', en: 'Germanium', vn: 'Gecmani', cat: 'metalloid' },
+            { n: 33, s: 'As', en: 'Arsenic', vn: 'Asen', cat: 'metalloid' },
+            { n: 34, s: 'Se', en: 'Selenium', vn: 'Selen', cat: 'non-metal' },
+            { n: 35, s: 'Br', en: 'Bromine', vn: 'Brom', cat: 'halogen' },
+            { n: 36, s: 'Kr', en: 'Krypton', vn: 'Kripton', cat: 'noble-gas' },
+            { n: 37, s: 'Rb', en: 'Rubidium', vn: 'Rubidi', cat: 'alkali' },
+            { n: 38, s: 'Sr', en: 'Strontium', vn: 'Stronti', cat: 'alkaline' },
+            { n: 39, s: 'Y', en: 'Yttrium', vn: 'Ytri', cat: 'transition' },
+            { n: 40, s: 'Zr', en: 'Zirconium', vn: 'Zirconi', cat: 'transition' },
+            { n: 41, s: 'Nb', en: 'Niobium', vn: 'Niobi', cat: 'transition' },
+            { n: 42, s: 'Mo', en: 'Molybdenum', vn: 'Molibden', cat: 'transition' },
+            { n: 43, s: 'Tc', en: 'Technetium', vn: 'Tecnexi', cat: 'transition' },
+            { n: 44, s: 'Ru', en: 'Ruthenium', vn: 'Ruteni', cat: 'transition' },
+            { n: 45, s: 'Rh', en: 'Rhodium', vn: 'Rodi', cat: 'transition' },
+            { n: 46, s: 'Pd', en: 'Palladium', vn: 'Paladi', cat: 'transition' },
+            { n: 47, s: 'Ag', en: 'Silver', vn: 'Bạc', cat: 'transition' },
+            { n: 48, s: 'Cd', en: 'Cadmium', vn: 'Cadimi', cat: 'transition' },
+            { n: 49, s: 'In', en: 'Indium', vn: 'Indi', cat: 'post-metal' },
+            { n: 50, s: 'Sn', en: 'Tin', vn: 'Thiếc', cat: 'post-metal' },
+            { n: 51, s: 'Sb', en: 'Antimony', vn: 'Antimon', cat: 'metalloid' },
+            { n: 52, s: 'Te', en: 'Tellurium', vn: 'Telu', cat: 'metalloid' },
+            { n: 53, s: 'I', en: 'Iodine', vn: 'Iốt', cat: 'halogen' },
+            { n: 54, s: 'Xe', en: 'Xenon', vn: 'Xenon', cat: 'noble-gas' },
+            { n: 55, s: 'Cs', en: 'Cesium', vn: 'Xesi', cat: 'alkali' },
+            { n: 56, s: 'Ba', en: 'Barium', vn: 'Bari', cat: 'alkaline' },
+            { n: 57, s: 'La', en: 'Lanthanum', vn: 'Lanthan', cat: 'lanthanide' },
+            { n: 58, s: 'Ce', en: 'Cerium', vn: 'Ceri', cat: 'lanthanide' },
+            { n: 59, s: 'Pr', en: 'Praseodymium', vn: 'Prasêôđim', cat: 'lanthanide' },
+            { n: 60, s: 'Nd', en: 'Neodymium', vn: 'Nêôđim', cat: 'lanthanide' },
+            { n: 61, s: 'Pm', en: 'Promethium', vn: 'Promêti', cat: 'lanthanide' },
+            { n: 62, s: 'Sm', en: 'Samarium', vn: 'Samari', cat: 'lanthanide' },
+            { n: 63, s: 'Eu', en: 'Europium', vn: 'Europi', cat: 'lanthanide' },
+            { n: 64, s: 'Gd', en: 'Gadolinium', vn: 'Gađôlini', cat: 'lanthanide' },
+            { n: 65, s: 'Tb', en: 'Terbium', vn: 'Tecbi', cat: 'lanthanide' },
+            { n: 66, s: 'Dy', en: 'Dysprosium', vn: 'Đisprôsi', cat: 'lanthanide' },
+            { n: 67, s: 'Ho', en: 'Holmium', vn: 'Hômi', cat: 'lanthanide' },
+            { n: 68, s: 'Er', en: 'Erbium', vn: 'Ecbi', cat: 'lanthanide' },
+            { n: 69, s: 'Tm', en: 'Thulium', vn: 'Tuli', cat: 'lanthanide' },
+            { n: 70, s: 'Yb', en: 'Ytterbium', vn: 'Ytecbi', cat: 'lanthanide' },
+            { n: 71, s: 'Lu', en: 'Lutetium', vn: 'Luteti', cat: 'lanthanide' },
+            { n: 72, s: 'Hf', en: 'Hafnium', vn: 'Hafni', cat: 'transition' },
+            { n: 73, s: 'Ta', en: 'Tantalum', vn: 'Tantal', cat: 'transition' },
+            { n: 74, s: 'W', en: 'Tungsten', vn: 'Vonfram', cat: 'transition' },
+            { n: 75, s: 'Re', en: 'Rhenium', vn: 'Reni', cat: 'transition' },
+            { n: 76, s: 'Os', en: 'Osmium', vn: 'Osmi', cat: 'transition' },
+            { n: 77, s: 'Ir', en: 'Iridium', vn: 'Iridi', cat: 'transition' },
+            { n: 78, s: 'Pt', en: 'Platinum', vn: 'Bạch kim', cat: 'transition' },
+            { n: 79, s: 'Au', en: 'Gold', vn: 'Vàng', cat: 'transition' },
+            { n: 80, s: 'Hg', en: 'Mercury', vn: 'Thủy ngân', cat: 'transition' },
+            { n: 81, s: 'Tl', en: 'Thallium', vn: 'Tali', cat: 'post-metal' },
+            { n: 82, s: 'Pb', en: 'Lead', vn: 'Chì', cat: 'post-metal' },
+            { n: 83, s: 'Bi', en: 'Bismuth', vn: 'Bismut', cat: 'post-metal' },
+            { n: 84, s: 'Po', en: 'Polonium', vn: 'Pôlôni', cat: 'metalloid' },
+            { n: 85, s: 'At', en: 'Astatine', vn: 'Astatin', cat: 'halogen' },
+            { n: 86, s: 'Rn', en: 'Radon', vn: 'Rađon', cat: 'noble-gas' },
+            { n: 87, s: 'Fr', en: 'Francium', vn: 'Fransi', cat: 'alkali' },
+            { n: 88, s: 'Ra', en: 'Radium', vn: 'Rađi', cat: 'alkaline' },
+            { n: 89, s: 'Ac', en: 'Actinium', vn: 'Actini', cat: 'actinide' },
+            { n: 90, s: 'Th', en: 'Thorium', vn: 'Tori', cat: 'actinide' },
+            { n: 91, s: 'Pa', en: 'Protactinium', vn: 'Prôtactini', cat: 'actinide' },
+            { n: 92, s: 'U', en: 'Uranium', vn: 'Urani', cat: 'actinide' },
+            { n: 93, s: 'Np', en: 'Neptunium', vn: 'Neptuni', cat: 'actinide' },
+            { n: 94, s: 'Pu', en: 'Plutonium', vn: 'Plutoni', cat: 'actinide' },
+            { n: 95, s: 'Am', en: 'Americium', vn: 'Amerixi', cat: 'actinide' },
+            { n: 96, s: 'Cm', en: 'Curium', vn: 'Curi', cat: 'actinide' },
+            { n: 97, s: 'Bk', en: 'Berkelium', vn: 'Beclơri', cat: 'actinide' },
+            { n: 98, s: 'Cf', en: 'Californium', vn: 'Califoni', cat: 'actinide' },
+            { n: 99, s: 'Es', en: 'Einsteinium', vn: 'Anstani', cat: 'actinide' },
+            { n: 100, s: 'Fm', en: 'Fermium', vn: 'Fecmi', cat: 'actinide' },
+            { n: 101, s: 'Md', en: 'Mendelevium', vn: 'Menđêlêvi', cat: 'actinide' },
+            { n: 102, s: 'No', en: 'Nobelium', vn: 'Nôbêli', cat: 'actinide' },
+            { n: 103, s: 'Lr', en: 'Lawrencium', vn: 'Lôrenxi', cat: 'actinide' },
+            { n: 104, s: 'Rf', en: 'Rutherfordium', vn: 'Rơthơfôđi', cat: 'transition' },
+            { n: 105, s: 'Db', en: 'Dubnium', vn: 'Đubni', cat: 'transition' },
+            { n: 106, s: 'Sg', en: 'Seaborgium', vn: 'Sibôgi', cat: 'transition' },
+            { n: 107, s: 'Bh', en: 'Bohrium', vn: 'Bôri', cat: 'transition' },
+            { n: 108, s: 'Hs', en: 'Hassium', vn: 'Haxi', cat: 'transition' },
+            { n: 109, s: 'Mt', en: 'Meitnerium', vn: 'Maitneri', cat: 'unknown' },
+            { n: 110, s: 'Ds', en: 'Darmstadtium', vn: 'Đacmơstati', cat: 'unknown' },
+            { n: 111, s: 'Rg', en: 'Roentgenium', vn: 'Rentơgeni', cat: 'unknown' },
+            { n: 112, s: 'Cn', en: 'Copernicium', vn: 'Côpecnixi', cat: 'transition' },
+            { n: 113, s: 'Nh', en: 'Nihonium', vn: 'Nihôni', cat: 'unknown' },
+            { n: 114, s: 'Fl', en: 'Flerovium', vn: 'Flêrôvi', cat: 'unknown' },
+            { n: 115, s: 'Mc', en: 'Moscovium', vn: 'Mátscơvi', cat: 'unknown' },
+            { n: 116, s: 'Lv', en: 'Livermorium', vn: 'Livơmôri', cat: 'unknown' },
+            { n: 117, s: 'Ts', en: 'Tennessine', vn: 'Tennessin', cat: 'unknown' },
+            { n: 118, s: 'Og', en: 'Oganesson', vn: 'Oganêson', cat: 'unknown' }
+        ];
+
+        const compounds = [
+            { s: 'NaCl', en: 'Sodium chloride', vn: 'Muối ăn', cat: 'salt' },
+            { s: 'CO2', en: 'Carbon dioxide', vn: 'Cacbon đioxit', cat: 'oxide' },
+            { s: 'CO', en: 'Carbon monoxide', vn: 'Cacbon monoxit', cat: 'oxide' },
+            { s: 'H2O', en: 'Water', vn: 'Nước', cat: 'oxide' },
+            { s: 'MgO', en: 'Magnesium oxide', vn: 'Magie oxit', cat: 'oxide' },
+            { s: 'CaO', en: 'Calcium oxide', vn: 'Vôi sống', cat: 'oxide' },
+            { s: 'FeO', en: 'Iron(II) oxide', vn: 'Sắt(II) oxit', cat: 'oxide' },
+            { s: 'Fe2O3', en: 'Iron(III) oxide', vn: 'Sắt(III) oxit', cat: 'oxide' },
+            { s: 'Al2O3', en: 'Aluminum oxide', vn: 'Nhôm oxit', cat: 'oxide' },
+            { s: 'SO2', en: 'Sulfur dioxide', vn: 'Lưu huỳnh đioxit', cat: 'oxide' },
+            { s: 'SO3', en: 'Sulfur trioxide', vn: 'Lưu huỳnh trioxit', cat: 'oxide' },
+            { s: 'P2O5', en: 'Diphosphorus pentoxide', vn: 'Điphotpho pentaoxit', cat: 'oxide' },
+            { s: 'HCl', en: 'Hydrochloric acid', vn: 'Axit clohydric', cat: 'acid' },
+            { s: 'H2SO4', en: 'Sulfuric acid', vn: 'Axit sunfuric', cat: 'acid' },
+            { s: 'H2SO3', en: 'Sulfurous acid', vn: 'Axit sunfurơ', cat: 'acid' },
+            { s: 'HNO3', en: 'Nitric acid', vn: 'Axit nitric', cat: 'acid' },
+            { s: 'H3PO4', en: 'Phosphoric acid', vn: 'Axit phosphoric', cat: 'acid' },
+            { s: 'CH3COOH', en: 'Acetic acid', vn: 'Axit axetic', cat: 'acid' },
+            { s: 'NaOH', en: 'Sodium hydroxide', vn: 'Natri hiđroxit', cat: 'base' },
+            { s: 'KOH', en: 'Potassium hydroxide', vn: 'Kali hiđroxit', cat: 'base' },
+            { s: 'Ca(OH)2', en: 'Calcium hydroxide', vn: 'Vôi tôi', cat: 'base' },
+            { s: 'Cu(OH)2', en: 'Copper(II) hydroxide', vn: 'Đồng(II) hiđroxit', cat: 'base' },
+            { s: 'Fe(OH)3', en: 'Iron(III) hydroxide', vn: 'Sắt(III) hiđroxit', cat: 'base' },
+            { s: 'NH4OH', en: 'Ammonium hydroxide', vn: 'Amoni hiđroxit', cat: 'base' },
+            { s: 'KNO3', en: 'Potassium nitrate', vn: 'Kali nitrat', cat: 'salt' },
+            { s: 'CuSO4', en: 'Copper(II) sulfate', vn: 'Đồng(II) sunfat', cat: 'salt' },
+            { s: 'CaCO3', en: 'Calcium carbonate', vn: 'Đá vôi', cat: 'salt' },
+            { s: 'NaHCO3', en: 'Sodium bicarbonate', vn: 'Baking soda', cat: 'salt' },
+            { s: 'AlCl3', en: 'Aluminum chloride', vn: 'Nhôm clorua', cat: 'salt' },
+            { s: 'Fe2(SO4)3', en: 'Iron(III) sulfate', vn: 'Sắt(III) sunfat', cat: 'salt' }
+        ];
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            document.getElementById(`btn-${viewId}`).classList.add('active-tab');
+        }
+
+        function getElementColor(cat) {
+            switch(cat) {
+                case 'non-metal': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                case 'noble-gas': return 'bg-purple-100 text-purple-800 border-purple-200';
+                case 'alkali': return 'bg-red-100 text-red-800 border-red-200';
+                case 'alkaline': return 'bg-orange-100 text-orange-800 border-orange-200';
+                case 'metalloid': return 'bg-teal-100 text-teal-800 border-teal-200';
+                case 'halogen': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+                case 'transition': return 'bg-blue-100 text-blue-800 border-blue-200';
+                case 'post-metal': return 'bg-slate-200 text-slate-800 border-slate-300';
+                case 'lanthanide': return 'bg-pink-100 text-pink-800 border-pink-200';
+                case 'actinide': return 'bg-rose-100 text-rose-800 border-rose-200';
+                default: return 'bg-white border-slate-200';
+            }
+        }
+
+        function getCompoundColor(cat) {
+            switch(cat) {
+                case 'oxide': return { border: 'border-blue-500', text: 'text-blue-600', bg: 'bg-blue-50' };
+                case 'acid': return { border: 'border-red-500', text: 'text-red-600', bg: 'bg-red-50' };
+                case 'base': return { border: 'border-emerald-500', text: 'text-emerald-600', bg: 'bg-emerald-50' };
+                case 'salt': return { border: 'border-amber-500', text: 'text-amber-600', bg: 'bg-amber-50' };
+                default: return { border: 'border-slate-500', text: 'text-slate-600', bg: 'bg-slate-50' };
+            }
+        }
+
+        function renderElements(data) {
+            const grid = document.getElementById('periodicGrid');
+            grid.innerHTML = '';
+            data.forEach(el => {
+                const color = getElementColor(el.cat);
+                const div = document.createElement('div');
+                div.className = `periodic-item ${color} p-2 rounded-lg shadow-sm text-center flex flex-col items-center justify-center border`;
+                div.onclick = () => speak(el.en);
+                div.innerHTML = `
+                    <span class="text-[10px] font-bold opacity-60 leading-none mb-1">#${el.n}</span>
+                    <span class="text-lg font-black leading-none mb-1">${el.s}</span>
+                    <span class="text-[9px] font-bold truncate w-full uppercase tracking-tighter">${el.en}</span>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function renderCompounds(data) {
+            const grid = document.getElementById('compoundGrid');
+            grid.innerHTML = '';
+            data.forEach(c => {
+                const colorStyles = getCompoundColor(c.cat);
+                const card = document.createElement('div');
+                card.className = `card bg-white p-5 rounded-2xl shadow-sm border-l-4 ${colorStyles.border} flex justify-between items-center cursor-pointer hover:shadow-md transition-all`;
+                card.onclick = () => speak(c.en);
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-bold ${colorStyles.text} ${colorStyles.bg} px-2 py-0.5 rounded uppercase">${c.s}</span>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${c.cat}</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800">${c.en}</h4>
+                        <p class="text-xs text-slate-500 italic">${c.vn}</p>
+                    </div>
+                    <div class="${colorStyles.text} opacity-30">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'en-US';
+                msg.rate = 0.9;
+                window.speechSynthesis.speak(msg);
+                
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-text').innerText = `Đang đọc: ${text}`;
+                toast.classList.replace('opacity-0', 'opacity-100');
+                setTimeout(() => toast.classList.replace('opacity-100', 'opacity-0'), 2000);
+            }
+        }
+
+        function searchElements() {
+            const query = document.getElementById('searchElements').value.toLowerCase();
+            const filtered = elements.filter(e => 
+                e.en.toLowerCase().includes(query) || 
+                e.s.toLowerCase().includes(query) || 
+                e.vn.toLowerCase().includes(query) ||
+                e.n.toString() === query
+            );
+            renderElements(filtered);
+        }
+
+        function filterCompounds(cat, btn) {
+            document.querySelectorAll('.filter-comp').forEach(b => b.classList.remove('filter-btn-active'));
+            btn.classList.add('filter-btn-active');
+            const filtered = cat === 'all' ? compounds : compounds.filter(c => c.cat === cat);
+            renderCompounds(filtered);
+        }
+
+        window.onload = () => {
+            renderElements(elements);
+            renderCompounds(compounds);
+        };
+    </script>
+</body>
+</html>
