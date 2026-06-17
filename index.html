@@ -3,48 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Hàng hóa & Doanh thu HKD</title>
+    <title>Quản lý Hàng hóa & Doanh thu HKD - V2</title>
+    <!-- Thư viện tạo file PDF trực tiếp từ HTML -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-	/* Giao diện màn hình đăng nhập */
-	.login-wrapper {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 100vh;
-		background-color: #e9ecef;
-	}
-	.login-box {
-		background: white;
-		padding: 30px;
-		border-radius: 8px;
-		box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-		text-align: center;
-		width: 100%;
-		max-width: 350px;
-	}
-	.login-box h2 {
-		color: #333;
-		margin-bottom: 20px;
-	}
-	.login-box input {
-		margin-bottom: 15px;
-		padding: 12px;
-		font-size: 16px;
-	}
-	.login-box button {
-		padding: 12px;
-		font-size: 16px;
-		background-color: #28a745;
-	}
-	.login-box button:hover {
-		background-color: #218838;
-	}
-
-	/* Ẩn giao diện chính mặc định */
-	#main-app {
-		display: none; 
-	}
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
         .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         h1, h2 { color: #0056b3; text-align: center; }
@@ -55,23 +17,36 @@
         button:hover { background-color: #0056b3; }
         .btn-pdf { background-color: #28a745; margin-top: 10px; }
         .btn-pdf:hover { background-color: #218838; }
+        .btn-refresh { background-color: #17a2b8; width: auto; padding: 8px 15px; }
+        .btn-refresh:hover { background-color: #138496; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #007bff; color: white; }
         tr:nth-child(even) { background-color: #f2f2f2; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .tabs-container { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; margin-bottom: 20px; padding-bottom: 10px; }
+        .tabs { display: flex; gap: 10px; }
         .tab-btn { background: #e9ecef; color: #333; border: 1px solid #ccc; padding: 8px 15px; cursor: pointer; width: auto; }
         .tab-btn.active { background: #007bff; color: white; border-color: #007bff; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
+        /* Giao diện màn hình đăng nhập */
+        .login-wrapper { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #e9ecef; }
+        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center; width: 100%; max-width: 350px; }
+        .login-box h2 { color: #333; margin-bottom: 20px; }
+        .login-box input { margin-bottom: 15px; padding: 12px; font-size: 16px; }
+        .login-box button { padding: 12px; font-size: 16px; background-color: #28a745; }
+        .login-box button:hover { background-color: #218838; }
+
+        #main-app { display: none; }
+        
         /* Định dạng mẫu sổ S1A-HKD phục vụ in ấn PDF */
         #mau-so-s1a { background: white; padding: 30px; color: black; font-family: "Times New Roman", Times, serif; }
         .header-so { display: flex; justify-content: space-between; font-size: 13px; }
         .title-so { text-align: center; margin: 30px 0; }
-        .title-so h2 { font-size: 20px; color: black; margin-bottom: 5px; }
+        .title-so h2 { font-size: 20px; color: black; margin-bottom: 5px; border: none; padding: 0; }
         .table-so { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .table-so th, .table-so td { border: 1px solid black; padding: 6px; font-size: 13px; text-align: center; color: black; }
+        .table-so th, .table-so td { border: 1px solid black; padding: 6px; font-size: 13px; text-align: center; color: black; background: none !important; }
         .table-so td.text-left { text-align: left; }
         .table-so td.text-right { text-align: right; }
         .footer-so { margin-top: 40px; display: flex; justify-content: space-between; text-align: center; font-size: 14px; }
@@ -79,7 +54,9 @@
     </style>
 </head>
 <body>
-<div id="login-screen" class="login-wrapper">
+
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="login-screen" class="login-wrapper">
         <div class="login-box">
             <h2>Đăng Nhập Hệ Thống</h2>
             <input type="password" id="matKhauInput" placeholder="Nhập mật khẩu..." onkeypress="kiemTraEnter(event)">
@@ -87,232 +64,233 @@
         </div>
     </div>
 
+    <!-- GIAO DIỆN CHÍNH CỦA APP -->
     <div id="main-app">
-	<div class="container">
-		<h1>HỆ THỐNG QUẢN LÝ CỬA HÀNG</h1>
-		
-		<div class="tabs">
-			<button class="tab-btn active" onclick="switchTab('quan-ly')">Nhập / Xuất Hàng</button>
-			<button class="tab-btn" onclick="switchTab('bao-cao')">Xuất Sổ S1A-HKD (Thuế)</button>
-		</div>
+        <div class="container">
+            <h1>HỆ THỐNG QUẢN LÝ CỬA HÀNG</h1>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('quan-ly')">Nhập / Xuất Hàng</button>
+                    <button class="tab-btn" onclick="switchTab('bao-cao')">Xuất Sổ S1A-HKD (Thuế)</button>
+                </div>
+                <button class="btn-refresh" onclick="taiDuLieuTuSheets()">🔄 Tải Lại Dữ Liệu Từ Sheet</button>
+            </div>
 
-		<div id="quan-ly" class="tab-content active">
-			<h2>Ghi Nhận Giao Dịch Kho</h2>
-			<div class="grid-form">
-				<div>
-					<label>Loại Giao Dịch</label>
-					<select id="loaiGD">
-						<option value="Bán">Bán Hàng (Xuất Kho)</option>
-						<option value="Nhập">Nhập Hàng</option>
-					</select>
-				</div>
-				<div>
-					<label>Số Chứng Từ (HĐ/Phiếu)</label>
-					<input type="text" id="soChungTu" placeholder="Ví dụ: HDB001">
-				</div>
-				<div>
-					<label>Mã Hàng Hóa</label>
-					<input type="text" id="maHang" placeholder="HH01">
-				</div>
-				<div>
-					<label>Tên Hàng Hóa</label>
-					<input type="text" id="tenHang" placeholder="Tên sản phẩm">
-				</div>
-				<div>
-					<label>Số Lượng</label>
-					<input type="number" id="soLuong" value="1">
-				</div>
-				<div>
-					<label>Đơn Giá (VNĐ)</label>
-					<input type="number" id="donGia" value="0">
-				</div>
-				<div>
-					<label>Thao Tác</label>
-					<button onclick="guiGiaoDich()">Lưu Vào Google Sheets</button>
-				</div>
-			</div>
+            <!-- TAB QUẢN LÝ NHẬP XUẤT -->
+            <div id="quan-ly" class="tab-content active">
+                <h2>Ghi Nhận Giao Dịch Kho</h2>
+                <div class="grid-form">
+                    <div>
+                        <label>Loại Giao Dịch</label>
+                        <select id="loaiGD">
+                            <option value="Bán">Bán Hàng (Xuất Kho)</option>
+                            <option value="Nhập">Nhập Hàng</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Số Chứng Từ (HĐ/Phiếu)</label>
+                        <input type="text" id="soChungTu" placeholder="Ví dụ: HDB001">
+                    </div>
+                    <div>
+                        <label>Mã Hàng Hóa</label>
+                        <input type="text" id="maHang" placeholder="HH01">
+                    </div>
+                    <div>
+                        <label>Tên Hàng Hóa</label>
+                        <input type="text" id="tenHang" placeholder="Tên sản phẩm">
+                    </div>
+                    <div>
+                        <label>Số Lượng</label>
+                        <input type="number" id="soLuong" value="1">
+                    </div>
+                    <div>
+                        <label>Đơn Giá (VNĐ)</label>
+                        <input type="number" id="donGia" value="0">
+                    </div>
+                    <div>
+                        <label>Thao Tác</label>
+                        <button onclick="guiGiaoDich()">Lưu Vào Google Sheets</button>
+                    </div>
+                </div>
 
-			<h2>Lịch Sử Giao Dịch Gần Đây</h2>
-			<table id="tableLichSu">
-				<thead>
-					<tr>
-						<th>Mã GD</th>
-						<th>Ngày Ghi</th>
-						<th>Loại</th>
-						<th>Số CT</th>
-						<th>Tên Hàng</th>
-						<th>Số Lượng</th>
-						<th>Đơn Giá</th>
-						<th>Thành Tiền</th>
-					</tr>
-				</thead>
-				<tbody>
-					</tbody>
-			</table>
-		</div>
+                <h2>Lịch Sử Giao Dịch Trong Hệ Thống</h2>
+                <table id="tableLichSu">
+                    <thead>
+                        <tr>
+                            <th>Mã GD</th>
+                            <th>Ngày Ghi</th>
+                            <th>Loại</th>
+                            <th>Số CT</th>
+                            <th>Tên Hàng</th>
+                            <th>Số Lượng</th>
+                            <th>Đơn Giá</th>
+                            <th>Thành Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu sẽ tự động tải từ Sheets vào đây -->
+                    </tbody>
+                </table>
+            </div>
 
-		<div id="bao-cao" class="tab-content">
-			<h2>Kết Xuất Sổ Chi Tiết Doanh Thu (Mẫu S1A-HKD)</h2>
-			<div class="grid-form" style="max-width: 500px; margin: auto;">
-				<div>
-					<label>Chọn Tháng Xem Báo Cáo</label>
-					<select id="chonThangBaoCao" onchange="locDuLieuS1A()">
-						<option value="06">Tháng 6 / 2026</option>
-						<option value="05">Tháng 5 / 2026</option>
-					</select>
-				</div>
-				<div>
-					<label>In Báo Cáo</label>
-					<button class="btn-pdf" onclick="xuatPDF_S1A()">Tải File PDF S1A-HKD</button>
-				</div>
-			</div>
+            <!-- TAB XUẤT SỔ CHI TIẾT DOANH THU S1A -->
+            <div id="bao-cao" class="tab-content">
+                <h2>Kết Xuất Sổ Chi Tiết Doanh Thu (Mẫu S1A-HKD)</h2>
+                <div class="grid-form" style="max-width: 500px; margin: auto;">
+                    <div>
+                        <label>Chọn Tháng Xem Báo Cáo</label>
+                        <select id="chonThangBaoCao" onchange="locDuLieuS1A()">
+                            <option value="06">Tháng 06</option>
+                            <option value="05">Tháng 05</option>
+                            <option value="04">Tháng 04</option>
+                            <option value="03">Tháng 03</option>
+                            <option value="02">Tháng 02</option>
+                            <option value="01">Tháng 01</option>
+                            <option value="07">Tháng 07</option>
+                            <option value="08">Tháng 08</option>
+                            <option value="09">Tháng 09</option>
+                            <option value="10">Tháng 10</option>
+                            <option value="11">Tháng 11</option>
+                            <option value="12">Tháng 12</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>In Báo Cáo</label>
+                        <button class="btn-pdf" onclick="xuatPDF_S1A()">Tải File PDF S1A-HKD</button>
+                    </div>
+                </div>
 
-			<div id="mau-so-s1a">
-				<div class="header-so">
-					<div>
-						<strong>Đơn vị kinh doanh:</strong> <span id="lblTenHKD">Cửa hàng Kinh doanh Toàn Cầu</span><br>
-						<strong>Mã số thuế:</strong> <span id="lblMST">123456789-001</span>
-					</div>
-					<div style="text-align: right;">
-						<strong>Mẫu số S1A-HKD</strong><br>
-						(Ban hành kèm theo Thông tư số 88/2021/TT-BTC<br>ngày 11/10/2021 của Bộ Tài chính)
-					</div>
-				</div>
+                <!-- KHU VỰC HIỂN THỊ MẪU SỔ ĐỂ IN PDF -->
+                <div id="mau-so-s1a">
+                    <div class="header-so">
+                        <div>
+                            <strong>Đơn vị kinh doanh:</strong> <span id="lblTenHKD">Hộ kinh doanh Song Mã</span><br>
+							<strong>Địa chỉ:</strong> <span id="lblDiachiHKD">43 Hải Dương, Xã Tuy An Bắc, Tỉnh Đắk Lắk</span><br>
+                            <strong>Mã số thuế:</strong> <span id="lblMST">8300038778</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong>Mẫu số S1A-HKD</strong><br>
+                            (Ban hành kèm theo Thông tư số 88/2021/TT-BTC<br>ngày 11/10/2021 của Bộ Tài chính)
+                        </div>
+                    </div>
 
-				<div class="title-so">
-					<h2>SỔ CHI TIẾT DOANH THU BÁN HÀNG HÓA, DỊCH VỤ</h2>
-					<div>Tháng: <span id="lblThangBaoCao">06</span> Năm 2026</div>
-				</div>
+                    <div class="title-so">
+                        <h2>SỔ CHI TIẾT DOANH THU BÁN HÀNG HÓA, DỊCH VỤ</h2>
+                        <div>Kỳ kê khai: Tháng <span id="lblThangBaoCao">06</span> Năm 2026</div>
+                    </div>
 
-				<table class="table-so">
-					<thead>
-						<tr>
-							<th rowspan="2" style="width: 5%;">STT</th>
-							<th rowspan="2" style="width: 12%;">Ngày, tháng ghi sổ</th>
-							<th colspan="2" style="width: 20%;">Chứng từ</th>
-							<th rowspan="2" style="width: 25%;">Diễn giải</th>
-							<th colspan="2" style="width: 25%;">Doanh thu bán hàng hóa, cung cấp dịch vụ</th>
-							<th rowspan="2" style="width: 13%;">Tổng doanh thu (VNĐ)</th>
-						</tr>
-						<tr>
-							<th>Số hiệu</th>
-							<th>Ngày, tháng</th>
-						</tr>
-						<tr style="font-style: italic; background: #eee;">
-							<td>A</td>
-							<td>B</td>
-							<td>C</td>
-							<td>D</td>
-							<td>E</td>
-							<td>1</td>
-							<td>2</td>
-							<td>3 = 1 + 2</td>
-						</tr>
-					</thead>
-					<tbody id="bodyS1A">
-						</tbody>
-				</table>
+                    <table class="table-so">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 5%;">STT</th>
+                                <th rowspan="2" style="width: 12%;">Ngày, tháng ghi sổ</th>
+                                <th colspan="2" style="width: 20%;">Chứng từ</th>
+                                <th rowspan="2" style="width: 25%;">Diễn giải</th>
+                                <th colspan="2" style="width: 25%;">Doanh thu bán hàng hóa, cung cấp dịch vụ</th>
+                                <th rowspan="2" style="width: 13%;">Tổng doanh thu (VNĐ)</th>
+                            </tr>
+                            <tr>
+                                <th>Số hiệu</th>
+                                <th>Ngày, tháng</th>
+                            </tr>
+                            <tr style="font-style: italic; background: #eee;">
+                                <td>A</td>
+                                <td>B</td>
+                                <td>C</td>
+                                <td>D</td>
+                                <td>E</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3 = 1 + 2</td>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyS1A">
+                            <!-- Dữ liệu giao dịch loại "Bán" lọc theo tháng từ Sheets sẽ điền vào đây -->
+                        </tbody>
+                    </table>
 
-				<div class="footer-so">
-					<div>
-						<strong>Người ghi sổ</strong><br><br><br><br>(Ký, ghi rõ họ tên)
-					</div>
-					<div>
-						<strong>Đại diện hộ kinh doanh</strong><br><br><br><br>
-						<strong>Nguyễn Văn A</strong>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+                    <div class="footer-so">
+                        <div>
+                            
+                        </div>
+                        <div>
+							<strong>Ngày ... tháng ... năm ....</strong><br>
+                            <strong>NGƯỜI ĐẠI DIỆN HỘ KINH DOANH</strong><br>
+							<strong>(Ký, ghi rõ họ tên)</strong><br><br><br><br>
+                            <strong>Nguyễn Thanh Đồng</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
-
-	// --- LOGIC ĐĂNG NHẬP ---
-	// Đặt mật khẩu của bạn tại đây
-	const MAT_KHAU_HE_THONG = "123456"; 
-
-	function xacNhanDangNhap() {
-		const inputPass = document.getElementById("matKhauInput").value;
-		
-		if (!inputPass) { 
-			alert("Vui lòng nhập mật khẩu!"); 
-			return; 
-		}
-		
-		// Hiển thị trạng thái đang xử lý trên nút bấm
-		const btnDangNhap = document.querySelector("#login-screen button");
-		const banDauText = btnDangNhap.innerText;
-		btnDangNhap.innerText = "Đang kiểm tra...";
-		btnDangNhap.disabled = true;
-
-		// Tạo gói dữ liệu gửi lên Google Apps Script
-		const payload = {
-			action: "kiemTraMatKhau",
-			matKhauNhap: inputPass
-		};
-
-		// Kiểm tra xem bạn đã cấu hình URL thực tế chưa
-		if (API_URL.includes("XXXXX")) {
-			// Chế độ chạy thử nghiệm nếu chưa dán link API thật
-			btnDangNhap.innerText = banDauText;
-			btnDangNhap.disabled = false;
-			if (inputPass === "123456") {
-				document.getElementById("login-screen").style.display = "none";
-				document.getElementById("main-app").style.display = "block";
-			} else {
-				alert("Chế độ thử nghiệm: Nhập '123456' để vào.");
-			}
-			return;
-		}
-
-		// Gửi yêu cầu xác thực lên Google Sheets
-		fetch(API_URL, {
-			method: "POST",
-			body: JSON.stringify(payload)
-		})
-		.then(res => res.json())
-		.then(response => {
-			// Khôi phục trạng thái nút bấm
-			btnDangNhap.innerText = banDauText;
-			btnDangNhap.disabled = false;
-			
-			if (response.match === true) {
-				// Đăng nhập thành công: Mở ứng dụng
-				document.getElementById("login-screen").style.display = "none";
-				document.getElementById("main-app").style.display = "block";
-			} else {
-				// Thất bại
-				alert("Mật khẩu không chính xác. Vui lòng kiểm tra lại!");
-				document.getElementById("matKhauInput").value = "";
-				document.getElementById("matKhauInput").focus();
-			}
-		})
-		.catch(err => {
-			btnDangNhap.innerText = banDauText;
-			btnDangNhap.disabled = false;
-			alert("Lỗi kết nối mạng hoặc link API ứng dụng chưa chính xác.");
-			console.error("Lỗi:", err);
-		});
-	}
-
-	// Bắt sự kiện phím Enter để đăng nhập cho nhanh
-	function kiemTraEnter(event) {
-		if (event.key === "Enter") {
-			xacNhanDangNhap();
-		}
-	}
-	// --- KẾT THÚC LOGIC ĐĂNG NHẬP ---
-    // ĐƯỜNG DẪN URL APP SCRIPT CỦA BẠN (Dán link nhận được ở Phần 2 vào đây)
+    // 🔴 ĐƯỜNG DẪN URL APP SCRIPT CỦA BẠN (Dán link nhận được từ Google Deploy vào đây)
     const API_URL = "https://script.google.com/macros/s/AKfycbxsHxrvbsj8jEgHUo7yUM7VsgqUjXsVvP2QnHIlr-OjvxRXTqb8cxxp6wbP5hKzGCa6/exec"; 
 
-    // Mảng dữ liệu cục bộ dùng tạm nếu chưa cấu hình API kết nối Sheets thành công
-    let danhSachGiaoDich = [
-        {MaGD:"GD001", NgayThang:"2026-06-10", LoaiGiaoDich:"Bán", SoChungTu:"HDB01", MaHang:"HH01", TenHang:"Gạo Thơm ST25", SoLuong:2, DonGia:30000, ThanhTien:60000},
-        {MaGD:"GD002", NgayThang:"2026-06-12", LoaiGiaoDich:"Bán", SoChungTu:"HDB02", MaHang:"HH02", TenHang:"Dầu Ăn Neptune 1L", SoLuong:5, DonGia:55000, ThanhTien:275000},
-        {MaGD:"GD003", NgayThang:"2026-05-15", LoaiGiaoDich:"Bán", SoChungTu:"HDB03", MaHang:"HH01", TenHang:"Gạo Thơm ST25", SoLuong:10, DonGia:30000, ThanhTien:300000}
-    ];
+    // Mảng lưu trữ dữ liệu đồng bộ toàn cục từ Google Sheet
+    let danhSachGiaoDich = [];
 
+    // --- XỬ LÝ ĐĂNG NHẬP ---
+    function xacNhanDangNhap() {
+        const inputPass = document.getElementById("matKhauInput").value;
+        if (!inputPass) { alert("Vui lòng nhập mật khẩu!"); return; }
+        
+        const btnDangNhap = document.querySelector("#login-screen button");
+        const banDauText = btnDangNhap.innerText;
+        btnDangNhap.innerText = "Đang kiểm tra...";
+        btnDangNhap.disabled = true;
+
+        if (API_URL.includes("XXXXX")) {
+            btnDangNhap.innerText = banDauText;
+            btnDangNhap.disabled = false;
+            if (inputPass === "123456") {
+                kichHoatHeThong();
+            } else {
+                alert("Chế độ thử nghiệm: Nhập '123456' để đăng nhập.");
+            }
+            return;
+        }
+
+        // Gửi yêu cầu xác thực lên Google Sheets qua POST
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "kiemTraMatKhau", matKhauNhap: inputPass })
+        })
+        .then(res => res.json())
+        .then(response => {
+            btnDangNhap.innerText = banDauText;
+            btnDangNhap.disabled = false;
+            if (response.match === true) {
+                kichHoatHeThong();
+            } else {
+                alert("Mật khẩu không chính xác!");
+                document.getElementById("matKhauInput").value = "";
+                document.getElementById("matKhauInput").focus();
+            }
+        })
+        .catch(err => {
+            btnDangNhap.innerText = banDauText;
+            btnDangNhap.disabled = false;
+            alert("Lỗi kết nối hoặc URL API chưa đúng.");
+            console.error(err);
+        });
+    }
+
+    function kiemTraEnter(event) {
+        if (event.key === "Enter") xacNhanDangNhap();
+    }
+
+    function kichHoatHeThong() {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+        // Tự động tải dữ liệu từ Google Sheets về ngay khi đăng nhập thành công
+        taiDuLieuTuSheets();
+    }
+
+    // --- CHUYỂN ĐỔI TAB ---
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -321,7 +299,63 @@
         if(tabId === 'bao-cao') locDuLieuS1A();
     }
 
-    // Gửi giao dịch lên Google Sheets
+    // --- TẢI DỮ LIỆU TỪ GOOGLE SHEETS (SỬ DỤNG LỆNH GET) ---
+    function taiDuLieuTuSheets() {
+        if (API_URL.includes("XXXXX")) {
+            // Dữ liệu giả lập mẫu nếu chưa cấu hình API thực tế
+            danhSachGiaoDich = [
+                {MaGiaoDich:"GD001", NgayThang:"2026-06-10", LoaiGiaoDich:"Bán", SoChungTu:"HDB01", MaHang:"HH01", TenHang:"Gạo Thơm ST25", SoLuong:2, DonGia:30000, ThanhTien:60000},
+                {MaGiaoDich:"GD002", NgayThang:"2026-06-12", LoaiGiaoDich:"Bán", SoChungTu:"HDB02", MaHang:"HH02", TenHang:"Dầu Ăn Neptune 1L", SoLuong:5, DonGia:55000, ThanhTien:275000},
+                {MaGiaoDich:"GD003", NgayThang:"2026-05-15", LoaiGiaoDich:"Bán", SoChungTu:"HDB03", MaHang:"HH01", TenHang:"Gạo Thơm ST25", SoLuong:10, DonGia:30000, ThanhTien:300000}
+            ];
+            renderLichSu();
+            return;
+        }
+
+        const tbody = document.getElementById("tableLichSu").getElementsByTagName("tbody")[0];
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:#0056b3;">🔄 Đang đồng bộ và tải toàn bộ lịch sử từ Google Sheets...</td></tr>`;
+
+        // Gọi API GET hành động getGiaoDich
+        fetch(`${API_URL}?action=getGiaoDich`)
+        .then(res => res.json())
+        .then(data => {
+            // Sắp xếp dữ liệu mới nhất lên đầu
+            danhSachGiaoDich = data.reverse(); 
+            renderLichSu();
+            if(document.getElementById('bao-cao').classList.contains('active')) {
+                locDuLieuS1A();
+            }
+        })
+        .catch(err => {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:red;">❌ Lỗi không thể đồng bộ dữ liệu. Vui lòng kiểm tra lại cấu hình.</td></tr>`;
+            console.error("Lỗi đồng bộ tải dữ liệu:", err);
+        });
+    }
+
+    // Ghi nhận dữ liệu lịch sử hiển thị
+    function renderLichSu() {
+        const tbody = document.getElementById("tableLichSu").getElementsByTagName("tbody")[0];
+        tbody.innerHTML = "";
+        
+        if(danhSachGiaoDich.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Chưa có lịch sử giao dịch nào được lưu.</td></tr>`;
+            return;
+        }
+
+        danhSachGiaoDich.forEach(gd => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${gd.MaGiaoDich || gd.maGD}</td>
+                             <td>${dinhDangNgayHienThi(gd.NgayThang)}</td>
+                             <td>${gd.LoaiGiaoDich || gd.loaiGD}</td>
+                             <td>${gd.SoChungTu || gd.soChungTu}</td>
+                             <td>${gd.TenHang || gd.tenHang}</td>
+                             <td>${gd.SoLuong || gd.soLuong}</td>
+                             <td>${Number(gd.DonGia || gd.donGia).toLocaleString()}</td>
+                             <td>${Number(gd.ThanhTien || gd.thanhTien).toLocaleString()}</td>`;
+        });
+    }
+
+    // --- GỬI GIAO DỊCH LÊN GOOGLE SHEETS ---
     function guiGiaoDich() {
         const loaiGD = document.getElementById("loaiGD").value;
         const soChungTu = document.getElementById("soChungTu").value;
@@ -339,70 +373,87 @@
             action: "themGiaoDich", maGD, ngayThang, loaiGD, soChungTu, maHang, tenHang, soLuong, donGia, thanhTien
         };
 
-        // Lưu tạm vào danh sách cục bộ để hiển thị ngay lập tức
-        danhSachGiaoDich.unshift(payload);
+        // Đẩy tạm một bản ghi đã chuẩn hóa vào mảng cục bộ để tối ưu giao diện lập tức
+        const bảnGhiChuan = {
+            MaGiaoDich: maGD, NgayThang: ngayThang, LoaiGiaoDich: loaiGD, 
+            SoChungTu: soChungTu, MaHang: maHang, TenHang: tenHang, 
+            SoLuong: soLuong, DonGia: donGia, ThanhTien: thanhTien
+        };
+        danhSachGiaoDich.unshift(bảnGhiChuan);
         renderLichSu();
 
-        // Gửi lệnh POST thực tế lên Google Sheets
-        if(!API_URL.includes("XXXXX")) {
-            fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(response => {
-                if(response.status === "SUCCESS") alert("Đã lưu dữ liệu vào Google Sheet thành công!");
-            }).catch(err => console.error("Lỗi đồng bộ:", err));
-        } else {
-            alert("Đã lưu dữ liệu thử nghiệm tại máy (Bạn cần cấu hình link API ở bước 2 để lưu vào Google Sheets thực tế).");
+        if(API_URL.includes("XXXXX")) {
+            alert("Đã ghi nhận thử nghiệm cục bộ.");
+            return;
         }
+
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(response => {
+            if(response.status === "SUCCESS") {
+                alert("Đã lưu dữ liệu vào Google Sheet và cập nhật kho thành công!");
+                taiDuLieuTuSheets(); // Tải lại toàn bộ để đảm bảo chính xác dữ liệu từ máy chủ
+            }
+        }).catch(err => alert("Lỗi gửi dữ liệu lên Sheets: " + err));
     }
 
-    function renderLichSu() {
-        const tbody = document.getElementById("tableLichSu").getElementsByTagName("tbody")[0];
-        tbody.innerHTML = "";
-        danhSachGiaoDich.forEach(gd => {
-            let row = tbody.insertRow();
-            row.innerHTML = `<td>${gd.MaGD || gd.maGD}</td>
-                             <td>${gd.NgayThang || gd.ngayThang}</td>
-                             <td>${gd.LoaiGiaoDich || gd.loaiGD}</td>
-                             <td>${gd.SoChungTu || gd.soChungTu}</td>
-                             <td>${gd.TenHang || gd.tenHang}</td>
-                             <td>${gd.SoLuong || gd.soLuong}</td>
-                             <td>${(gd.DonGia || gd.donGia).toLocaleString()}</td>
-                             <td>${(gd.ThanhTien || gd.thanhTien).toLocaleString()}</td>`;
-        });
+    // --- HÀM TRÍCH XUẤT THÁNG VÀ ĐỊNH DẠNG NGÀY CHUẨN KHÔNG BỊ LỖI ---
+    function layThangTuChuoiNgay(dateStr) {
+        if (!dateStr) return "";
+        const d = new Date(dateStr);
+        if (!isNaN(d.getTime())) {
+            let month = d.getMonth() + 1;
+            return month < 10 ? "0" + month : "" + month;
+        }
+        const parts = dateStr.toString().split("-");
+        if (parts.length > 1) return parts[1]; // Định dạng YYYY-MM-DD
+        return "";
     }
 
-    // Lọc dữ liệu hiển thị theo biểu mẫu thuế S1A-HKD
+    function dinhDangNgayHienThi(dateStr) {
+        if (!dateStr) return "";
+        const d = new Date(dateStr);
+        if (!isNaN(d.getTime())) {
+            let day = d.getDate();
+            let month = d.getMonth() + 1;
+            let year = d.getFullYear();
+            return `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${year}`;
+        }
+        return dateStr.toString().split("T")[0];
+    }
+
+    // --- LỌC DỮ LIỆU SỔ S1A-HKD THEO THÁNG THỰC TẾ ---
     function locDuLieuS1A() {
         const thangSelect = document.getElementById("chonThangBaoCao").value;
         document.getElementById("lblThangBaoCao").innerText = thangSelect;
         const tbody = document.getElementById("bodyS1A");
         tbody.innerHTML = "";
 
-        // Chỉ lọc các giao dịch "Bán" (tạo ra doanh thu) thuộc tháng được chọn
+        // Chỉ lọc các giao dịch "Bán" (Doanh thu) thuộc đúng tháng được chọn
         const duLieuLoc = danhSachGiaoDich.filter(gd => {
-            const dateStr = gd.NgayThang || gd.ngayThang;
-            const thangGD = dateStr.split("-")[1];
+            const hienTaiThang = layThangTuChuoiNgay(gd.NgayThang);
             const loai = gd.LoaiGiaoDich || gd.loaiGD;
-            return thangGD === thangSelect && loai === "Bán";
+            return hienTaiThang === thangSelect && loai === "Bán";
         });
 
         let tongDoanhThuThang = 0;
         if(duLieuLoc.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Không có dữ liệu doanh thu trong tháng này.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px;">Không tìm thấy dữ liệu doanh thu phát sinh trên Google Sheet cho tháng này.</td></tr>`;
             return;
         }
 
+        // Đổ dữ liệu đồng bộ từ Sheet vào biểu mẫu thuế S1A
         duLieuLoc.forEach((gd, index) => {
-            const thanhTien = gd.ThanhTien || gd.thanhTien;
+            const thanhTien = Number(gd.ThanhTien || gd.thanhTien);
             tongDoanhThuThang += thanhTien;
             let row = tbody.insertRow();
             row.innerHTML = `<td>${index + 1}</td>
-                             <td>${gd.NgayThang || gd.ngayThang}</td>
+                             <td>${dinhDangNgayHienThi(gd.NgayThang)}</td>
                              <td>${gd.SoChungTu || gd.soChungTu}</td>
-                             <td>${gd.NgayThang || gd.ngayThang}</td>
+                             <td>${dinhDangNgayHienThi(gd.NgayThang)}</td>
                              <td class="text-left">Bán ${gd.TenHang || gd.tenHang}</td>
                              <td class="text-right">${thanhTien.toLocaleString()}</td>
                              <td class="text-right">0</td>
@@ -411,10 +462,10 @@
 
         // Dòng tổng cộng cuối sổ
         let rowTong = tbody.insertRow();
-        rowTong.innerHTML = `<td colspan="5"><strong>Tổng cộng phát sinh trong tháng:</strong></td>
+        rowTong.innerHTML = `<td colspan="5" style="text-align:left;"><strong>Tổng cộng phát sinh trong tháng:</strong></td>
                              <td class="text-right"><strong>${tongDoanhThuThang.toLocaleString()}</strong></td>
                              <td class="text-right"><strong>0</strong></td>
-                             <td class="text-right" style="background:#ddd;"><strong>${tongDoanhThuThang.toLocaleString()} VNĐ</strong></td>`;
+                             <td class="text-right" style="background:#eee !important;"><strong>${tongDoanhThuThang.toLocaleString()} VNĐ</strong></td>`;
     }
 
     // Xuất tài liệu biểu mẫu S1A sang định dạng PDF để in ấn
@@ -426,13 +477,10 @@
             filename:     `So_S1A_HKD_Thang_${thang}_2026.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } // Sổ thường nằm ngang
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
         };
         html2pdf().set(opt).from(element).save();
     }
-
-    // Khởi chạy ban đầu tải bảng lịch sử giao dịch mẫu
-    renderLichSu();
 </script>
 </body>
 </html>
