@@ -3,394 +3,436 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Học Phát Âm Hóa Học IUPAC Toàn Diện</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Quản lý Hàng hóa & Doanh thu HKD</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-        .card:hover { transform: translateY(-4px); transition: all 0.2s ease; }
-        .active-tab { background-color: #4f46e5 !important; color: white !important; }
-        .periodic-item { transition: all 0.2s; cursor: pointer; min-height: 80px; }
-        .periodic-item:hover { transform: scale(1.1); z-index: 10; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .filter-btn-active { background-color: #4f46e5 !important; color: white !important; border-color: #4338ca !important; }
+	/* Giao diện màn hình đăng nhập */
+	.login-wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		background-color: #e9ecef;
+	}
+	.login-box {
+		background: white;
+		padding: 30px;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+		text-align: center;
+		width: 100%;
+		max-width: 350px;
+	}
+	.login-box h2 {
+		color: #333;
+		margin-bottom: 20px;
+	}
+	.login-box input {
+		margin-bottom: 15px;
+		padding: 12px;
+		font-size: 16px;
+	}
+	.login-box button {
+		padding: 12px;
+		font-size: 16px;
+		background-color: #28a745;
+	}
+	.login-box button:hover {
+		background-color: #218838;
+	}
+
+	/* Ẩn giao diện chính mặc định */
+	#main-app {
+		display: none; 
+	}
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #0056b3; text-align: center; }
+        .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 6px; }
+        label { font-weight: bold; font-size: 14px; }
+        input, select, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 100%; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        .btn-pdf { background-color: #28a745; margin-top: 10px; }
+        .btn-pdf:hover { background-color: #218838; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        .tab-btn { background: #e9ecef; color: #333; border: 1px solid #ccc; padding: 8px 15px; cursor: pointer; width: auto; }
+        .tab-btn.active { background: #007bff; color: white; border-color: #007bff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Định dạng mẫu sổ S1A-HKD phục vụ in ấn PDF */
+        #mau-so-s1a { background: white; padding: 30px; color: black; font-family: "Times New Roman", Times, serif; }
+        .header-so { display: flex; justify-content: space-between; font-size: 13px; }
+        .title-so { text-align: center; margin: 30px 0; }
+        .title-so h2 { font-size: 20px; color: black; margin-bottom: 5px; }
+        .table-so { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table-so th, .table-so td { border: 1px solid black; padding: 6px; font-size: 13px; text-align: center; color: black; }
+        .table-so td.text-left { text-align: left; }
+        .table-so td.text-right { text-align: right; }
+        .footer-so { margin-top: 40px; display: flex; justify-content: space-between; text-align: center; font-size: 14px; }
+        .footer-so div { width: 40%; }
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-indigo-800 mb-3">Học Phát Âm Hóa Học IUPAC</h1>
-            <p class="text-slate-600 max-w-2xl mx-auto">Danh sách đầy đủ 118 nguyên tố và các hợp chất phổ biến. Nhấn vào thẻ để nghe phát âm tiếng Anh chuẩn.</p>
-        </header>
-
-        <!-- Main Navigation -->
-        <nav class="flex flex-wrap justify-center gap-2 mb-10 bg-white p-2 rounded-2xl shadow-sm  mx-auto w-full max-w-full border border-slate-200">
-            <button onclick="switchView('periodic')" id="btn-periodic" class="nav-btn px-5 py-2 rounded-xl text-slate-600 font-semibold active-tab">Bảng Tuần Hoàn (118)</button>
-            <button onclick="switchView('compounds')" id="btn-compounds" class="nav-btn px-5 py-2 rounded-xl text-slate-600 font-semibold">Hợp Chất</button>
-            <button onclick="switchView('guide')" id="btn-guide" class="nav-btn px-5 py-2 rounded-xl text-slate-600 font-semibold">Quy Tắc Đọc</button>
-        </nav>
-
-        <!-- View: Bảng Tuần Hoàn -->
-        <section id="view-periodic" class="view-section">
-            <div class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                <h2 class="text-2xl font-bold text-slate-800 border-l-4 border-indigo-500 pl-3">Nguyên Tố Hóa Học</h2>
-                <div class="relative w-full md:w-80">
-                    <input type="text" id="searchElements" onkeyup="searchElements()" placeholder="Tìm tên, ký hiệu, số hiệu..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-400 outline-none">
-                    <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-            </div>
-            <div id="periodicGrid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-2">
-                <!-- 118 Elements injected here -->
-            </div>
-        </section>
-
-        <!-- View: Hợp Chất -->
-        <section id="view-compounds" class="view-section hidden">
-            <div class="flex flex-wrap gap-2 mb-6 justify-center md:justify-start">
-                <button onclick="filterCompounds('all', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all filter-btn-active">Tất cả</button>
-                <button onclick="filterCompounds('oxide', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Oxit</button>
-                <button onclick="filterCompounds('acid', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Axit</button>
-                <button onclick="filterCompounds('base', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Bazo</button>
-                <button onclick="filterCompounds('salt', this)" class="filter-comp px-5 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all">Muối</button>
-            </div>
-            <div id="compoundGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Compounds injected here -->
-            </div>
-        </section>
-
-        <!-- View: Quy Tắc Đọc -->
-        <section id="view-guide" class="view-section hidden">
-            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
-                <h2 class="text-3xl font-bold text-indigo-800 mb-6">Hướng dẫn nhanh cách đọc IUPAC</h2>
-                
-                <div class="space-y-8">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">1. Nguyên tắc tiền tố (Số lượng)</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>1</strong>: Mono-</div>
-                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>2</strong>: Di-</div>
-                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>3</strong>: Tri-</div>
-                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>4</strong>: Tetra-</div>
-                            <div class="bg-slate-50 p-3 rounded-lg text-center"><strong>5</strong>: Penta-</div>
-                        </div>
-                    </div>
-
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">2. Oxit (Oxides)</h3>
-                            <p class="text-slate-600 mb-2 italic">Tên kim loại + Oxide</p>
-                            <ul class="list-disc ml-5 space-y-2 text-slate-700">
-                                <li>Nếu kim loại nhiều hóa trị: Thêm hóa trị (II, III...)</li>
-                                <li>Phi kim: Thêm tiền tố chỉ số nguyên tử.</li>
-                                <li>Ví dụ: <strong>CO2</strong> - Carbon <strong>di</strong>oxide.</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">3. Axit (Acids)</h3>
-                            <ul class="list-disc ml-5 space-y-2 text-slate-700">
-                                <li>Không có oxy: <strong>Hydro</strong>...<strong>ic</strong> acid.</li>
-                                <li>Có nhiều oxy: ...<strong>ic</strong> acid.</li>
-                                <li>Có ít oxy: ...<strong>ous</strong> acid.</li>
-                                <li>Ví dụ: <strong>HCl</strong> - Hydrochloric acid.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-800 mb-3 border-b pb-2">4. Muối & Gốc Axit</h3>
-                        <p class="text-slate-600 mb-4 italic">Tên kim loại + Tên gốc axit</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="border p-4 rounded-xl">
-                                <span class="block font-bold text-indigo-600">-ide</span>
-                                <span class="text-sm">Gốc không oxy (Cl-, S2-...)</span>
-                            </div>
-                            <div class="border p-4 rounded-xl">
-                                <span class="block font-bold text-emerald-600">-ate</span>
-                                <span class="text-sm">Gốc nhiều oxy (SO4, NO3...)</span>
-                            </div>
-                            <div class="border p-4 rounded-xl">
-                                <span class="block font-bold text-amber-600">-ite</span>
-                                <span class="text-sm">Gốc ít oxy (SO3, NO2...)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<body>
+<div id="login-screen" class="login-wrapper">
+        <div class="login-box">
+            <h2>Đăng Nhập Hệ Thống</h2>
+            <input type="password" id="matKhauInput" placeholder="Nhập mật khẩu..." onkeypress="kiemTraEnter(event)">
+            <button onclick="xacNhanDangNhap()">Vào Cửa Hàng</button>
+        </div>
     </div>
 
-    <!-- Toast UI -->
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-indigo-900 text-white px-6 py-3 rounded-full shadow-2xl opacity-0 transition-all pointer-events-none flex items-center gap-3 z-50">
-        <span id="toast-text">Pronouncing...</span>
-    </div>
+    <div id="main-app">
+	<div class="container">
+		<h1>HỆ THỐNG QUẢN LÝ CỬA HÀNG</h1>
+		
+		<div class="tabs">
+			<button class="tab-btn active" onclick="switchTab('quan-ly')">Nhập / Xuất Hàng</button>
+			<button class="tab-btn" onclick="switchTab('bao-cao')">Xuất Sổ S1A-HKD (Thuế)</button>
+		</div>
 
-    <script>
-        const elements = [
-            { n: 1, s: 'H', en: 'Hydrogen', vn: 'Hydro', cat: 'non-metal' },
-            { n: 2, s: 'He', en: 'Helium', vn: 'Heli', cat: 'noble-gas' },
-            { n: 3, s: 'Li', en: 'Lithium', vn: 'Liti', cat: 'alkali' },
-            { n: 4, s: 'Be', en: 'Beryllium', vn: 'Beri', cat: 'alkaline' },
-            { n: 5, s: 'B', en: 'Boron', vn: 'Bo', cat: 'metalloid' },
-            { n: 6, s: 'C', en: 'Carbon', vn: 'Cacbon', cat: 'non-metal' },
-            { n: 7, s: 'N', en: 'Nitrogen', vn: 'Nitơ', cat: 'non-metal' },
-            { n: 8, s: 'O', en: 'Oxygen', vn: 'Oxy', cat: 'non-metal' },
-            { n: 9, s: 'F', en: 'Fluorine', vn: 'Flo', cat: 'halogen' },
-            { n: 10, s: 'Ne', en: 'Neon', vn: 'Neon', cat: 'noble-gas' },
-            { n: 11, s: 'Na', en: 'Sodium', vn: 'Natri', cat: 'alkali' },
-            { n: 12, s: 'Mg', en: 'Magnesium', vn: 'Magie', cat: 'alkaline' },
-            { n: 13, s: 'Al', en: 'Aluminum', vn: 'Nhôm', cat: 'post-metal' },
-            { n: 14, s: 'Si', en: 'Silicon', vn: 'Silic', cat: 'metalloid' },
-            { n: 15, s: 'P', en: 'Phosphorus', vn: 'Photpho', cat: 'non-metal' },
-            { n: 16, s: 'S', en: 'Sulfur', vn: 'Lưu huỳnh', cat: 'non-metal' },
-            { n: 17, s: 'Cl', en: 'Chlorine', vn: 'Clo', cat: 'halogen' },
-            { n: 18, s: 'Ar', en: 'Argon', vn: 'Argon', cat: 'noble-gas' },
-            { n: 19, s: 'K', en: 'Potassium', vn: 'Kali', cat: 'alkali' },
-            { n: 20, s: 'Ca', en: 'Calcium', vn: 'Canxi', cat: 'alkaline' },
-            { n: 21, s: 'Sc', en: 'Scandium', vn: 'Scandi', cat: 'transition' },
-            { n: 22, s: 'Ti', en: 'Titanium', vn: 'Titan', cat: 'transition' },
-            { n: 23, s: 'V', en: 'Vanadium', vn: 'Vanadi', cat: 'transition' },
-            { n: 24, s: 'Cr', en: 'Chromium', vn: 'Crom', cat: 'transition' },
-            { n: 25, s: 'Mn', en: 'Manganese', vn: 'Mangan', cat: 'transition' },
-            { n: 26, s: 'Fe', en: 'Iron', vn: 'Sắt', cat: 'transition' },
-            { n: 27, s: 'Co', en: 'Cobalt', vn: 'Coban', cat: 'transition' },
-            { n: 28, s: 'Ni', en: 'Nickel', vn: 'Niken', cat: 'transition' },
-            { n: 29, s: 'Cu', en: 'Copper', vn: 'Đồng', cat: 'transition' },
-            { n: 30, s: 'Zn', en: 'Zinc', vn: 'Kẽm', cat: 'transition' },
-            { n: 31, s: 'Ga', en: 'Gallium', vn: 'Gali', cat: 'post-metal' },
-            { n: 32, s: 'Ge', en: 'Germanium', vn: 'Gecmani', cat: 'metalloid' },
-            { n: 33, s: 'As', en: 'Arsenic', vn: 'Asen', cat: 'metalloid' },
-            { n: 34, s: 'Se', en: 'Selenium', vn: 'Selen', cat: 'non-metal' },
-            { n: 35, s: 'Br', en: 'Bromine', vn: 'Brom', cat: 'halogen' },
-            { n: 36, s: 'Kr', en: 'Krypton', vn: 'Kripton', cat: 'noble-gas' },
-            { n: 37, s: 'Rb', en: 'Rubidium', vn: 'Rubidi', cat: 'alkali' },
-            { n: 38, s: 'Sr', en: 'Strontium', vn: 'Stronti', cat: 'alkaline' },
-            { n: 39, s: 'Y', en: 'Yttrium', vn: 'Ytri', cat: 'transition' },
-            { n: 40, s: 'Zr', en: 'Zirconium', vn: 'Zirconi', cat: 'transition' },
-            { n: 41, s: 'Nb', en: 'Niobium', vn: 'Niobi', cat: 'transition' },
-            { n: 42, s: 'Mo', en: 'Molybdenum', vn: 'Molibden', cat: 'transition' },
-            { n: 43, s: 'Tc', en: 'Technetium', vn: 'Tecnexi', cat: 'transition' },
-            { n: 44, s: 'Ru', en: 'Ruthenium', vn: 'Ruteni', cat: 'transition' },
-            { n: 45, s: 'Rh', en: 'Rhodium', vn: 'Rodi', cat: 'transition' },
-            { n: 46, s: 'Pd', en: 'Palladium', vn: 'Paladi', cat: 'transition' },
-            { n: 47, s: 'Ag', en: 'Silver', vn: 'Bạc', cat: 'transition' },
-            { n: 48, s: 'Cd', en: 'Cadmium', vn: 'Cadimi', cat: 'transition' },
-            { n: 49, s: 'In', en: 'Indium', vn: 'Indi', cat: 'post-metal' },
-            { n: 50, s: 'Sn', en: 'Tin', vn: 'Thiếc', cat: 'post-metal' },
-            { n: 51, s: 'Sb', en: 'Antimony', vn: 'Antimon', cat: 'metalloid' },
-            { n: 52, s: 'Te', en: 'Tellurium', vn: 'Telu', cat: 'metalloid' },
-            { n: 53, s: 'I', en: 'Iodine', vn: 'Iốt', cat: 'halogen' },
-            { n: 54, s: 'Xe', en: 'Xenon', vn: 'Xenon', cat: 'noble-gas' },
-            { n: 55, s: 'Cs', en: 'Cesium', vn: 'Xesi', cat: 'alkali' },
-            { n: 56, s: 'Ba', en: 'Barium', vn: 'Bari', cat: 'alkaline' },
-            { n: 57, s: 'La', en: 'Lanthanum', vn: 'Lanthan', cat: 'lanthanide' },
-            { n: 58, s: 'Ce', en: 'Cerium', vn: 'Ceri', cat: 'lanthanide' },
-            { n: 59, s: 'Pr', en: 'Praseodymium', vn: 'Prasêôđim', cat: 'lanthanide' },
-            { n: 60, s: 'Nd', en: 'Neodymium', vn: 'Nêôđim', cat: 'lanthanide' },
-            { n: 61, s: 'Pm', en: 'Promethium', vn: 'Promêti', cat: 'lanthanide' },
-            { n: 62, s: 'Sm', en: 'Samarium', vn: 'Samari', cat: 'lanthanide' },
-            { n: 63, s: 'Eu', en: 'Europium', vn: 'Europi', cat: 'lanthanide' },
-            { n: 64, s: 'Gd', en: 'Gadolinium', vn: 'Gađôlini', cat: 'lanthanide' },
-            { n: 65, s: 'Tb', en: 'Terbium', vn: 'Tecbi', cat: 'lanthanide' },
-            { n: 66, s: 'Dy', en: 'Dysprosium', vn: 'Đisprôsi', cat: 'lanthanide' },
-            { n: 67, s: 'Ho', en: 'Holmium', vn: 'Hômi', cat: 'lanthanide' },
-            { n: 68, s: 'Er', en: 'Erbium', vn: 'Ecbi', cat: 'lanthanide' },
-            { n: 69, s: 'Tm', en: 'Thulium', vn: 'Tuli', cat: 'lanthanide' },
-            { n: 70, s: 'Yb', en: 'Ytterbium', vn: 'Ytecbi', cat: 'lanthanide' },
-            { n: 71, s: 'Lu', en: 'Lutetium', vn: 'Luteti', cat: 'lanthanide' },
-            { n: 72, s: 'Hf', en: 'Hafnium', vn: 'Hafni', cat: 'transition' },
-            { n: 73, s: 'Ta', en: 'Tantalum', vn: 'Tantal', cat: 'transition' },
-            { n: 74, s: 'W', en: 'Tungsten', vn: 'Vonfram', cat: 'transition' },
-            { n: 75, s: 'Re', en: 'Rhenium', vn: 'Reni', cat: 'transition' },
-            { n: 76, s: 'Os', en: 'Osmium', vn: 'Osmi', cat: 'transition' },
-            { n: 77, s: 'Ir', en: 'Iridium', vn: 'Iridi', cat: 'transition' },
-            { n: 78, s: 'Pt', en: 'Platinum', vn: 'Bạch kim', cat: 'transition' },
-            { n: 79, s: 'Au', en: 'Gold', vn: 'Vàng', cat: 'transition' },
-            { n: 80, s: 'Hg', en: 'Mercury', vn: 'Thủy ngân', cat: 'transition' },
-            { n: 81, s: 'Tl', en: 'Thallium', vn: 'Tali', cat: 'post-metal' },
-            { n: 82, s: 'Pb', en: 'Lead', vn: 'Chì', cat: 'post-metal' },
-            { n: 83, s: 'Bi', en: 'Bismuth', vn: 'Bismut', cat: 'post-metal' },
-            { n: 84, s: 'Po', en: 'Polonium', vn: 'Pôlôni', cat: 'metalloid' },
-            { n: 85, s: 'At', en: 'Astatine', vn: 'Astatin', cat: 'halogen' },
-            { n: 86, s: 'Rn', en: 'Radon', vn: 'Rađon', cat: 'noble-gas' },
-            { n: 87, s: 'Fr', en: 'Francium', vn: 'Fransi', cat: 'alkali' },
-            { n: 88, s: 'Ra', en: 'Radium', vn: 'Rađi', cat: 'alkaline' },
-            { n: 89, s: 'Ac', en: 'Actinium', vn: 'Actini', cat: 'actinide' },
-            { n: 90, s: 'Th', en: 'Thorium', vn: 'Tori', cat: 'actinide' },
-            { n: 91, s: 'Pa', en: 'Protactinium', vn: 'Prôtactini', cat: 'actinide' },
-            { n: 92, s: 'U', en: 'Uranium', vn: 'Urani', cat: 'actinide' },
-            { n: 93, s: 'Np', en: 'Neptunium', vn: 'Neptuni', cat: 'actinide' },
-            { n: 94, s: 'Pu', en: 'Plutonium', vn: 'Plutoni', cat: 'actinide' },
-            { n: 95, s: 'Am', en: 'Americium', vn: 'Amerixi', cat: 'actinide' },
-            { n: 96, s: 'Cm', en: 'Curium', vn: 'Curi', cat: 'actinide' },
-            { n: 97, s: 'Bk', en: 'Berkelium', vn: 'Beclơri', cat: 'actinide' },
-            { n: 98, s: 'Cf', en: 'Californium', vn: 'Califoni', cat: 'actinide' },
-            { n: 99, s: 'Es', en: 'Einsteinium', vn: 'Anstani', cat: 'actinide' },
-            { n: 100, s: 'Fm', en: 'Fermium', vn: 'Fecmi', cat: 'actinide' },
-            { n: 101, s: 'Md', en: 'Mendelevium', vn: 'Menđêlêvi', cat: 'actinide' },
-            { n: 102, s: 'No', en: 'Nobelium', vn: 'Nôbêli', cat: 'actinide' },
-            { n: 103, s: 'Lr', en: 'Lawrencium', vn: 'Lôrenxi', cat: 'actinide' },
-            { n: 104, s: 'Rf', en: 'Rutherfordium', vn: 'Rơthơfôđi', cat: 'transition' },
-            { n: 105, s: 'Db', en: 'Dubnium', vn: 'Đubni', cat: 'transition' },
-            { n: 106, s: 'Sg', en: 'Seaborgium', vn: 'Sibôgi', cat: 'transition' },
-            { n: 107, s: 'Bh', en: 'Bohrium', vn: 'Bôri', cat: 'transition' },
-            { n: 108, s: 'Hs', en: 'Hassium', vn: 'Haxi', cat: 'transition' },
-            { n: 109, s: 'Mt', en: 'Meitnerium', vn: 'Maitneri', cat: 'unknown' },
-            { n: 110, s: 'Ds', en: 'Darmstadtium', vn: 'Đacmơstati', cat: 'unknown' },
-            { n: 111, s: 'Rg', en: 'Roentgenium', vn: 'Rentơgeni', cat: 'unknown' },
-            { n: 112, s: 'Cn', en: 'Copernicium', vn: 'Côpecnixi', cat: 'transition' },
-            { n: 113, s: 'Nh', en: 'Nihonium', vn: 'Nihôni', cat: 'unknown' },
-            { n: 114, s: 'Fl', en: 'Flerovium', vn: 'Flêrôvi', cat: 'unknown' },
-            { n: 115, s: 'Mc', en: 'Moscovium', vn: 'Mátscơvi', cat: 'unknown' },
-            { n: 116, s: 'Lv', en: 'Livermorium', vn: 'Livơmôri', cat: 'unknown' },
-            { n: 117, s: 'Ts', en: 'Tennessine', vn: 'Tennessin', cat: 'unknown' },
-            { n: 118, s: 'Og', en: 'Oganesson', vn: 'Oganêson', cat: 'unknown' }
-        ];
+		<div id="quan-ly" class="tab-content active">
+			<h2>Ghi Nhận Giao Dịch Kho</h2>
+			<div class="grid-form">
+				<div>
+					<label>Loại Giao Dịch</label>
+					<select id="loaiGD">
+						<option value="Bán">Bán Hàng (Xuất Kho)</option>
+						<option value="Nhập">Nhập Hàng</option>
+					</select>
+				</div>
+				<div>
+					<label>Số Chứng Từ (HĐ/Phiếu)</label>
+					<input type="text" id="soChungTu" placeholder="Ví dụ: HDB001">
+				</div>
+				<div>
+					<label>Mã Hàng Hóa</label>
+					<input type="text" id="maHang" placeholder="HH01">
+				</div>
+				<div>
+					<label>Tên Hàng Hóa</label>
+					<input type="text" id="tenHang" placeholder="Tên sản phẩm">
+				</div>
+				<div>
+					<label>Số Lượng</label>
+					<input type="number" id="soLuong" value="1">
+				</div>
+				<div>
+					<label>Đơn Giá (VNĐ)</label>
+					<input type="number" id="donGia" value="0">
+				</div>
+				<div>
+					<label>Thao Tác</label>
+					<button onclick="guiGiaoDich()">Lưu Vào Google Sheets</button>
+				</div>
+			</div>
 
-        const compounds = [
-            { s: 'NaCl', en: 'Sodium chloride', vn: 'Muối ăn', cat: 'salt' },
-            { s: 'CO2', en: 'Carbon dioxide', vn: 'Cacbon đioxit', cat: 'oxide' },
-            { s: 'CO', en: 'Carbon monoxide', vn: 'Cacbon monoxit', cat: 'oxide' },
-            { s: 'H2O', en: 'Water', vn: 'Nước', cat: 'oxide' },
-            { s: 'MgO', en: 'Magnesium oxide', vn: 'Magie oxit', cat: 'oxide' },
-            { s: 'CaO', en: 'Calcium oxide', vn: 'Vôi sống', cat: 'oxide' },
-            { s: 'FeO', en: 'Iron(II) oxide', vn: 'Sắt(II) oxit', cat: 'oxide' },
-            { s: 'Fe2O3', en: 'Iron(III) oxide', vn: 'Sắt(III) oxit', cat: 'oxide' },
-            { s: 'Al2O3', en: 'Aluminum oxide', vn: 'Nhôm oxit', cat: 'oxide' },
-            { s: 'SO2', en: 'Sulfur dioxide', vn: 'Lưu huỳnh đioxit', cat: 'oxide' },
-            { s: 'SO3', en: 'Sulfur trioxide', vn: 'Lưu huỳnh trioxit', cat: 'oxide' },
-            { s: 'P2O5', en: 'Diphosphorus pentoxide', vn: 'Điphotpho pentaoxit', cat: 'oxide' },
-            { s: 'HCl', en: 'Hydrochloric acid', vn: 'Axit clohydric', cat: 'acid' },
-            { s: 'H2SO4', en: 'Sulfuric acid', vn: 'Axit sunfuric', cat: 'acid' },
-            { s: 'H2SO3', en: 'Sulfurous acid', vn: 'Axit sunfurơ', cat: 'acid' },
-            { s: 'HNO3', en: 'Nitric acid', vn: 'Axit nitric', cat: 'acid' },
-            { s: 'H3PO4', en: 'Phosphoric acid', vn: 'Axit phosphoric', cat: 'acid' },
-            { s: 'CH3COOH', en: 'Acetic acid', vn: 'Axit axetic', cat: 'acid' },
-            { s: 'NaOH', en: 'Sodium hydroxide', vn: 'Natri hiđroxit', cat: 'base' },
-            { s: 'KOH', en: 'Potassium hydroxide', vn: 'Kali hiđroxit', cat: 'base' },
-            { s: 'Ca(OH)2', en: 'Calcium hydroxide', vn: 'Vôi tôi', cat: 'base' },
-            { s: 'Cu(OH)2', en: 'Copper(II) hydroxide', vn: 'Đồng(II) hiđroxit', cat: 'base' },
-            { s: 'Fe(OH)3', en: 'Iron(III) hydroxide', vn: 'Sắt(III) hiđroxit', cat: 'base' },
-            { s: 'NH4OH', en: 'Ammonium hydroxide', vn: 'Amoni hiđroxit', cat: 'base' },
-            { s: 'KNO3', en: 'Potassium nitrate', vn: 'Kali nitrat', cat: 'salt' },
-            { s: 'CuSO4', en: 'Copper(II) sulfate', vn: 'Đồng(II) sunfat', cat: 'salt' },
-            { s: 'CaCO3', en: 'Calcium carbonate', vn: 'Đá vôi', cat: 'salt' },
-            { s: 'NaHCO3', en: 'Sodium bicarbonate', vn: 'Baking soda', cat: 'salt' },
-            { s: 'AlCl3', en: 'Aluminum chloride', vn: 'Nhôm clorua', cat: 'salt' },
-            { s: 'Fe2(SO4)3', en: 'Iron(III) sulfate', vn: 'Sắt(III) sunfat', cat: 'salt' }
-        ];
+			<h2>Lịch Sử Giao Dịch Gần Đây</h2>
+			<table id="tableLichSu">
+				<thead>
+					<tr>
+						<th>Mã GD</th>
+						<th>Ngày Ghi</th>
+						<th>Loại</th>
+						<th>Số CT</th>
+						<th>Tên Hàng</th>
+						<th>Số Lượng</th>
+						<th>Đơn Giá</th>
+						<th>Thành Tiền</th>
+					</tr>
+				</thead>
+				<tbody>
+					</tbody>
+			</table>
+		</div>
 
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-tab'));
-            document.getElementById(`view-${viewId}`).classList.remove('hidden');
-            document.getElementById(`btn-${viewId}`).classList.add('active-tab');
-        }
+		<div id="bao-cao" class="tab-content">
+			<h2>Kết Xuất Sổ Chi Tiết Doanh Thu (Mẫu S1A-HKD)</h2>
+			<div class="grid-form" style="max-width: 500px; margin: auto;">
+				<div>
+					<label>Chọn Tháng Xem Báo Cáo</label>
+					<select id="chonThangBaoCao" onchange="locDuLieuS1A()">
+						<option value="06">Tháng 6 / 2026</option>
+						<option value="05">Tháng 5 / 2026</option>
+					</select>
+				</div>
+				<div>
+					<label>In Báo Cáo</label>
+					<button class="btn-pdf" onclick="xuatPDF_S1A()">Tải File PDF S1A-HKD</button>
+				</div>
+			</div>
 
-        function getElementColor(cat) {
-            switch(cat) {
-                case 'non-metal': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                case 'noble-gas': return 'bg-purple-100 text-purple-800 border-purple-200';
-                case 'alkali': return 'bg-red-100 text-red-800 border-red-200';
-                case 'alkaline': return 'bg-orange-100 text-orange-800 border-orange-200';
-                case 'metalloid': return 'bg-teal-100 text-teal-800 border-teal-200';
-                case 'halogen': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-                case 'transition': return 'bg-blue-100 text-blue-800 border-blue-200';
-                case 'post-metal': return 'bg-slate-200 text-slate-800 border-slate-300';
-                case 'lanthanide': return 'bg-pink-100 text-pink-800 border-pink-200';
-                case 'actinide': return 'bg-rose-100 text-rose-800 border-rose-200';
-                default: return 'bg-white border-slate-200';
-            }
-        }
+			<div id="mau-so-s1a">
+				<div class="header-so">
+					<div>
+						<strong>Đơn vị kinh doanh:</strong> <span id="lblTenHKD">Cửa hàng Kinh doanh Toàn Cầu</span><br>
+						<strong>Mã số thuế:</strong> <span id="lblMST">123456789-001</span>
+					</div>
+					<div style="text-align: right;">
+						<strong>Mẫu số S1A-HKD</strong><br>
+						(Ban hành kèm theo Thông tư số 88/2021/TT-BTC<br>ngày 11/10/2021 của Bộ Tài chính)
+					</div>
+				</div>
 
-        function getCompoundColor(cat) {
-            switch(cat) {
-                case 'oxide': return { border: 'border-blue-500', text: 'text-blue-600', bg: 'bg-blue-50' };
-                case 'acid': return { border: 'border-red-500', text: 'text-red-600', bg: 'bg-red-50' };
-                case 'base': return { border: 'border-emerald-500', text: 'text-emerald-600', bg: 'bg-emerald-50' };
-                case 'salt': return { border: 'border-amber-500', text: 'text-amber-600', bg: 'bg-amber-50' };
-                default: return { border: 'border-slate-500', text: 'text-slate-600', bg: 'bg-slate-50' };
-            }
-        }
+				<div class="title-so">
+					<h2>SỔ CHI TIẾT DOANH THU BÁN HÀNG HÓA, DỊCH VỤ</h2>
+					<div>Tháng: <span id="lblThangBaoCao">06</span> Năm 2026</div>
+				</div>
 
-        function renderElements(data) {
-            const grid = document.getElementById('periodicGrid');
-            grid.innerHTML = '';
-            data.forEach(el => {
-                const color = getElementColor(el.cat);
-                const div = document.createElement('div');
-                div.className = `periodic-item ${color} p-2 rounded-lg shadow-sm text-center flex flex-col items-center justify-center border`;
-                div.onclick = () => speak(el.en);
-                div.innerHTML = `
-                    <span class="text-[10px] font-bold opacity-60 leading-none mb-1">#${el.n}</span>
-                    <span class="text-lg font-black leading-none mb-1">${el.s}</span>
-                    <span class="text-[9px] font-bold truncate w-full uppercase tracking-tighter">${el.en}</span>
-                `;
-                grid.appendChild(div);
-            });
-        }
+				<table class="table-so">
+					<thead>
+						<tr>
+							<th rowspan="2" style="width: 5%;">STT</th>
+							<th rowspan="2" style="width: 12%;">Ngày, tháng ghi sổ</th>
+							<th colspan="2" style="width: 20%;">Chứng từ</th>
+							<th rowspan="2" style="width: 25%;">Diễn giải</th>
+							<th colspan="2" style="width: 25%;">Doanh thu bán hàng hóa, cung cấp dịch vụ</th>
+							<th rowspan="2" style="width: 13%;">Tổng doanh thu (VNĐ)</th>
+						</tr>
+						<tr>
+							<th>Số hiệu</th>
+							<th>Ngày, tháng</th>
+						</tr>
+						<tr style="font-style: italic; background: #eee;">
+							<td>A</td>
+							<td>B</td>
+							<td>C</td>
+							<td>D</td>
+							<td>E</td>
+							<td>1</td>
+							<td>2</td>
+							<td>3 = 1 + 2</td>
+						</tr>
+					</thead>
+					<tbody id="bodyS1A">
+						</tbody>
+				</table>
 
-        function renderCompounds(data) {
-            const grid = document.getElementById('compoundGrid');
-            grid.innerHTML = '';
-            data.forEach(c => {
-                const colorStyles = getCompoundColor(c.cat);
-                const card = document.createElement('div');
-                card.className = `card bg-white p-5 rounded-2xl shadow-sm border-l-4 ${colorStyles.border} flex justify-between items-center cursor-pointer hover:shadow-md transition-all`;
-                card.onclick = () => speak(c.en);
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold ${colorStyles.text} ${colorStyles.bg} px-2 py-0.5 rounded uppercase">${c.s}</span>
-                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${c.cat}</span>
-                        </div>
-                        <h4 class="font-bold text-slate-800">${c.en}</h4>
-                        <p class="text-xs text-slate-500 italic">${c.vn}</p>
-                    </div>
-                    <div class="${colorStyles.text} opacity-30">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+				<div class="footer-so">
+					<div>
+						<strong>Người ghi sổ</strong><br><br><br><br>(Ký, ghi rõ họ tên)
+					</div>
+					<div>
+						<strong>Đại diện hộ kinh doanh</strong><br><br><br><br>
+						<strong>Nguyễn Văn A</strong>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
 
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'en-US';
-                msg.rate = 0.9;
-                window.speechSynthesis.speak(msg);
-                
-                const toast = document.getElementById('toast');
-                document.getElementById('toast-text').innerText = `Đang đọc: ${text}`;
-                toast.classList.replace('opacity-0', 'opacity-100');
-                setTimeout(() => toast.classList.replace('opacity-100', 'opacity-0'), 2000);
-            }
-        }
+	// --- LOGIC ĐĂNG NHẬP ---
+	// Đặt mật khẩu của bạn tại đây
+	const MAT_KHAU_HE_THONG = "123456"; 
 
-        function searchElements() {
-            const query = document.getElementById('searchElements').value.toLowerCase();
-            const filtered = elements.filter(e => 
-                e.en.toLowerCase().includes(query) || 
-                e.s.toLowerCase().includes(query) || 
-                e.vn.toLowerCase().includes(query) ||
-                e.n.toString() === query
-            );
-            renderElements(filtered);
-        }
+	function xacNhanDangNhap() {
+		const inputPass = document.getElementById("matKhauInput").value;
+		
+		if (!inputPass) { 
+			alert("Vui lòng nhập mật khẩu!"); 
+			return; 
+		}
+		
+		// Hiển thị trạng thái đang xử lý trên nút bấm
+		const btnDangNhap = document.querySelector("#login-screen button");
+		const banDauText = btnDangNhap.innerText;
+		btnDangNhap.innerText = "Đang kiểm tra...";
+		btnDangNhap.disabled = true;
 
-        function filterCompounds(cat, btn) {
-            document.querySelectorAll('.filter-comp').forEach(b => b.classList.remove('filter-btn-active'));
-            btn.classList.add('filter-btn-active');
-            const filtered = cat === 'all' ? compounds : compounds.filter(c => c.cat === cat);
-            renderCompounds(filtered);
-        }
+		// Tạo gói dữ liệu gửi lên Google Apps Script
+		const payload = {
+			action: "kiemTraMatKhau",
+			matKhauNhap: inputPass
+		};
 
-        window.onload = () => {
-            renderElements(elements);
-            renderCompounds(compounds);
+		// Kiểm tra xem bạn đã cấu hình URL thực tế chưa
+		if (API_URL.includes("XXXXX")) {
+			// Chế độ chạy thử nghiệm nếu chưa dán link API thật
+			btnDangNhap.innerText = banDauText;
+			btnDangNhap.disabled = false;
+			if (inputPass === "123456") {
+				document.getElementById("login-screen").style.display = "none";
+				document.getElementById("main-app").style.display = "block";
+			} else {
+				alert("Chế độ thử nghiệm: Nhập '123456' để vào.");
+			}
+			return;
+		}
+
+		// Gửi yêu cầu xác thực lên Google Sheets
+		fetch(API_URL, {
+			method: "POST",
+			body: JSON.stringify(payload)
+		})
+		.then(res => res.json())
+		.then(response => {
+			// Khôi phục trạng thái nút bấm
+			btnDangNhap.innerText = banDauText;
+			btnDangNhap.disabled = false;
+			
+			if (response.match === true) {
+				// Đăng nhập thành công: Mở ứng dụng
+				document.getElementById("login-screen").style.display = "none";
+				document.getElementById("main-app").style.display = "block";
+			} else {
+				// Thất bại
+				alert("Mật khẩu không chính xác. Vui lòng kiểm tra lại!");
+				document.getElementById("matKhauInput").value = "";
+				document.getElementById("matKhauInput").focus();
+			}
+		})
+		.catch(err => {
+			btnDangNhap.innerText = banDauText;
+			btnDangNhap.disabled = false;
+			alert("Lỗi kết nối mạng hoặc link API ứng dụng chưa chính xác.");
+			console.error("Lỗi:", err);
+		});
+	}
+
+	// Bắt sự kiện phím Enter để đăng nhập cho nhanh
+	function kiemTraEnter(event) {
+		if (event.key === "Enter") {
+			xacNhanDangNhap();
+		}
+	}
+	// --- KẾT THÚC LOGIC ĐĂNG NHẬP ---
+    // ĐƯỜNG DẪN URL APP SCRIPT CỦA BẠN (Dán link nhận được ở Phần 2 vào đây)
+    const API_URL = "https://script.google.com/macros/s/AKfycbxsHxrvbsj8jEgHUo7yUM7VsgqUjXsVvP2QnHIlr-OjvxRXTqb8cxxp6wbP5hKzGCa6/exec"; 
+
+    // Mảng dữ liệu cục bộ dùng tạm nếu chưa cấu hình API kết nối Sheets thành công
+    let danhSachGiaoDich = [
+        {MaGD:"GD001", NgayThang:"2026-06-10", LoaiGiaoDich:"Bán", SoChungTu:"HDB01", MaHang:"HH01", TenHang:"Gạo Thơm ST25", SoLuong:2, DonGia:30000, ThanhTien:60000},
+        {MaGD:"GD002", NgayThang:"2026-06-12", LoaiGiaoDich:"Bán", SoChungTu:"HDB02", MaHang:"HH02", TenHang:"Dầu Ăn Neptune 1L", SoLuong:5, DonGia:55000, ThanhTien:275000},
+        {MaGD:"GD003", NgayThang:"2026-05-15", LoaiGiaoDich:"Bán", SoChungTu:"HDB03", MaHang:"HH01", TenHang:"Gạo Thơm ST25", SoLuong:10, DonGia:30000, ThanhTien:300000}
+    ];
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if(tabId === 'bao-cao') locDuLieuS1A();
+    }
+
+    // Gửi giao dịch lên Google Sheets
+    function guiGiaoDich() {
+        const loaiGD = document.getElementById("loaiGD").value;
+        const soChungTu = document.getElementById("soChungTu").value;
+        const maHang = document.getElementById("maHang").value;
+        const tenHang = document.getElementById("tenHang").value;
+        const soLuong = Number(document.getElementById("soLuong").value);
+        const donGia = Number(document.getElementById("donGia").value);
+        const thanhTien = soLuong * donGia;
+        const ngayThang = new Date().toISOString().split('T')[0];
+        const maGD = "GD" + Math.floor(Math.random() * 10000);
+
+        if(!maHang || !tenHang) { alert("Vui lòng điền đủ mã và tên hàng!"); return; }
+
+        const payload = {
+            action: "themGiaoDich", maGD, ngayThang, loaiGD, soChungTu, maHang, tenHang, soLuong, donGia, thanhTien
         };
-    </script>
+
+        // Lưu tạm vào danh sách cục bộ để hiển thị ngay lập tức
+        danhSachGiaoDich.unshift(payload);
+        renderLichSu();
+
+        // Gửi lệnh POST thực tế lên Google Sheets
+        if(!API_URL.includes("XXXXX")) {
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(response => {
+                if(response.status === "SUCCESS") alert("Đã lưu dữ liệu vào Google Sheet thành công!");
+            }).catch(err => console.error("Lỗi đồng bộ:", err));
+        } else {
+            alert("Đã lưu dữ liệu thử nghiệm tại máy (Bạn cần cấu hình link API ở bước 2 để lưu vào Google Sheets thực tế).");
+        }
+    }
+
+    function renderLichSu() {
+        const tbody = document.getElementById("tableLichSu").getElementsByTagName("tbody")[0];
+        tbody.innerHTML = "";
+        danhSachGiaoDich.forEach(gd => {
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${gd.MaGD || gd.maGD}</td>
+                             <td>${gd.NgayThang || gd.ngayThang}</td>
+                             <td>${gd.LoaiGiaoDich || gd.loaiGD}</td>
+                             <td>${gd.SoChungTu || gd.soChungTu}</td>
+                             <td>${gd.TenHang || gd.tenHang}</td>
+                             <td>${gd.SoLuong || gd.soLuong}</td>
+                             <td>${(gd.DonGia || gd.donGia).toLocaleString()}</td>
+                             <td>${(gd.ThanhTien || gd.thanhTien).toLocaleString()}</td>`;
+        });
+    }
+
+    // Lọc dữ liệu hiển thị theo biểu mẫu thuế S1A-HKD
+    function locDuLieuS1A() {
+        const thangSelect = document.getElementById("chonThangBaoCao").value;
+        document.getElementById("lblThangBaoCao").innerText = thangSelect;
+        const tbody = document.getElementById("bodyS1A");
+        tbody.innerHTML = "";
+
+        // Chỉ lọc các giao dịch "Bán" (tạo ra doanh thu) thuộc tháng được chọn
+        const duLieuLoc = danhSachGiaoDich.filter(gd => {
+            const dateStr = gd.NgayThang || gd.ngayThang;
+            const thangGD = dateStr.split("-")[1];
+            const loai = gd.LoaiGiaoDich || gd.loaiGD;
+            return thangGD === thangSelect && loai === "Bán";
+        });
+
+        let tongDoanhThuThang = 0;
+        if(duLieuLoc.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Không có dữ liệu doanh thu trong tháng này.</td></tr>`;
+            return;
+        }
+
+        duLieuLoc.forEach((gd, index) => {
+            const thanhTien = gd.ThanhTien || gd.thanhTien;
+            tongDoanhThuThang += thanhTien;
+            let row = tbody.insertRow();
+            row.innerHTML = `<td>${index + 1}</td>
+                             <td>${gd.NgayThang || gd.ngayThang}</td>
+                             <td>${gd.SoChungTu || gd.soChungTu}</td>
+                             <td>${gd.NgayThang || gd.ngayThang}</td>
+                             <td class="text-left">Bán ${gd.TenHang || gd.tenHang}</td>
+                             <td class="text-right">${thanhTien.toLocaleString()}</td>
+                             <td class="text-right">0</td>
+                             <td class="text-right"><strong>${thanhTien.toLocaleString()}</strong></td>`;
+        });
+
+        // Dòng tổng cộng cuối sổ
+        let rowTong = tbody.insertRow();
+        rowTong.innerHTML = `<td colspan="5"><strong>Tổng cộng phát sinh trong tháng:</strong></td>
+                             <td class="text-right"><strong>${tongDoanhThuThang.toLocaleString()}</strong></td>
+                             <td class="text-right"><strong>0</strong></td>
+                             <td class="text-right" style="background:#ddd;"><strong>${tongDoanhThuThang.toLocaleString()} VNĐ</strong></td>`;
+    }
+
+    // Xuất tài liệu biểu mẫu S1A sang định dạng PDF để in ấn
+    function xuatPDF_S1A() {
+        const element = document.getElementById('mau-so-s1a');
+        const thang = document.getElementById("chonThangBaoCao").value;
+        const opt = {
+            margin:       10,
+            filename:     `So_S1A_HKD_Thang_${thang}_2026.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } // Sổ thường nằm ngang
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    // Khởi chạy ban đầu tải bảng lịch sử giao dịch mẫu
+    renderLichSu();
+</script>
 </body>
 </html>
